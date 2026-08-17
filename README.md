@@ -9,7 +9,7 @@ yayın ayarlarının hazırlanabildiği içerik stüdyosu olarak tasarlanmışt�
 ## Canlı uygulama
 
 - GitHub Pages: https://ilkerdrn.github.io/dou-codelab/
-- Sites sürümü: https://dou-codelab.ilkerdrnn.chatgpt.site
+
 
 ## Demo erişimi
 
