@@ -23,6 +23,11 @@ type View =
   | "notifications"
   | "classroom"
   | "reports"
+  | "projectworkspace"
+  | "achievements"
+  | "settings"
+  | "helpcenter"
+  | "systemready"
   | "news"
   | "studio";
 const courses = [
@@ -301,14 +306,18 @@ export default function App() {
     ["learningplan", "◌", "Akıllı planım"],
     ["tasks", "▣", "Görevlerim"],
     ["projects", "◆", "Projelerim"],
+    ["projectworkspace", "⌥", "Proje teslim alanı"],
     ["calendar", "□", "Takvim"],
     ["lab", "</>", "Kod laboratuvarı"],
     ["mentor", "✦", "AI Kod Koçu"],
     ["passport", "◈", "Skill Passport"],
     ["arena", "⚑", "CodeLab Arena"],
+    ["achievements", "♛", "Rozet & ünvanlar"],
     ["career", "◎", "Kariyer eşleşmesi"],
     ["mentoring", "♧", "Mentorluk"],
     ["notifications", "◉", "Bildirim merkezi"],
+    ["settings", "⚙", "Ayarlar"],
+    ["helpcenter", "?", "Yardım merkezi"],
     ["news", "◉", "Duyurular"],
   ];
   const teacherNav: any = [
@@ -321,6 +330,7 @@ export default function App() {
     ["projects", "◆", "Proje inceleme"],
     ["reviews", "◇", "Kod inceleme"],
     ["reports", "▦", "Rapor merkezi"],
+    ["systemready", "⌁", "Sistem hazırlığı"],
     ["paths", "⌘", "Ders patikaları"],
     ["calendar", "□", "Ders takvimi"],
     ["progress", "↗", "Yayınlananlar"],
@@ -330,13 +340,13 @@ export default function App() {
     role === "student"
       ? [
           ["ÖĞREN", studentNav.slice(0, 4)],
-          ["UYGULA", studentNav.slice(4, 9)],
-          ["GELİŞİM & KARİYER", studentNav.slice(9)],
+          ["UYGULA", studentNav.slice(4, 10)],
+          ["GELİŞİM & KARİYER", studentNav.slice(10)],
         ]
       : [
           ["ÜRET & YÖNET", teacherNav.slice(0, 5)],
-          ["DEĞERLENDİR", teacherNav.slice(5, 9)],
-          ["DERS AKIŞI", teacherNav.slice(9)],
+          ["DEĞERLENDİR", teacherNav.slice(5, 10)],
+          ["DERS AKIŞI", teacherNav.slice(10)],
         ];
   return (
     <main className="shell">
@@ -460,6 +470,13 @@ export default function App() {
         )}{" "}
         {view === "classroom" && <Classroom note={note} />}{" "}
         {view === "reports" && <ReportCenter note={note} />}{" "}
+        {view === "projectworkspace" && (
+          <ProjectWorkspace note={note} go={setView} />
+        )}{" "}
+        {view === "achievements" && <Achievements note={note} />}{" "}
+        {view === "settings" && <Settings note={note} />}{" "}
+        {view === "helpcenter" && <HelpCenter note={note} />}{" "}
+        {view === "systemready" && <SystemReady note={note} />}{" "}
         {view === "news" && <News note={note} />}{" "}
         {view === "studio" && (
           <Studio
@@ -1801,6 +1818,497 @@ function Studio({
     </section>
   );
 }
+function ProjectWorkspace({ note, go }: any) {
+  const [step, setStep] = useState(4);
+  const steps = [
+    "Problem",
+    "Analiz",
+    "Tasarım",
+    "Geliştirme",
+    "Test",
+    "Teslim",
+    "Doğrulama",
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>UÇTAN UCA PROJE TESLİMİ</small>
+          <h1>Akıllı Kampüs API Projesi</h1>
+          <p>
+            Fikirden doğrulanmış portfolyo kanıtına kadar bütün aşamalar tek
+            yerde.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Proje paylaşım bağlantısı kopyalandı.")}
+        >
+          Projeyi paylaş ↗
+        </button>
+      </div>
+      <div className="projectStepper">
+        {steps.map((x, i) => (
+          <button
+            className={i < step ? "done" : i === step ? "on" : ""}
+            onClick={() => setStep(i)}
+            key={x}
+          >
+            <i>{i < step ? "✓" : i + 1}</i>
+            <span>{x}</span>
+          </button>
+        ))}
+      </div>
+      <div className="workspaceGrid">
+        <section className="projectMain">
+          <header>
+            <div>
+              <small>04 · GELİŞTİRME</small>
+              <h2>Çalışan prototip ve kaynak kod</h2>
+            </div>
+            <span>Teslime 6 gün</span>
+          </header>
+          <div className="repoCard">
+            <i>⌘</i>
+            <div>
+              <small>GITHUB DEPOSU</small>
+              <b>ayseyilmaz/dou-campus-api</b>
+              <span>main · 24 commit · 18 dk önce</span>
+            </div>
+            <button
+              onClick={() =>
+                note("GitHub deposu ve commit geçmişi doğrulandı.")
+              }
+            >
+              Depoyu doğrula
+            </button>
+          </div>
+          <label>
+            Canlı demo bağlantısı
+            <input defaultValue="https://dou-campus-api.example.dev" />
+          </label>
+          <div className="deliverables">
+            <header>
+              <b>Teslim kanıtları</b>
+              <button onClick={() => note("Dosya yükleme alanı açıldı.")}>
+                ＋ Dosya ekle
+              </button>
+            </header>
+            {[
+              ["README.md", "Dokümantasyon"],
+              ["api-demo.png", "Ekran görüntüsü"],
+              ["test-report.pdf", "Test raporu"],
+            ].map((x) => (
+              <article key={x[0]}>
+                <i>▤</i>
+                <span>
+                  <b>{x[0]}</b>
+                  <small>{x[1]}</small>
+                </span>
+                <button onClick={() => note(`${x[0]} görüntülendi.`)}>
+                  Görüntüle
+                </button>
+              </article>
+            ))}
+          </div>
+          <footer>
+            <button onClick={() => note("Taslak kaydedildi.")}>
+              Taslak kaydet
+            </button>
+            <button
+              onClick={() => {
+                setStep(5);
+                note("Proje değerlendirmeye gönderildi.");
+              }}
+            >
+              Değerlendirmeye gönder →
+            </button>
+          </footer>
+        </section>
+        <aside className="revisionPanel">
+          <small>REVİZYON GEÇMİŞİ</small>
+          <h2>2 değerlendirme</h2>
+          {[
+            ["v1.2", "API hata yanıtlarını standartlaştır.", "Bugün"],
+            ["v1.1", "README kurulum adımlarını ekle.", "18 Ağustos"],
+          ].map((x) => (
+            <article key={x[0]}>
+              <header>
+                <b>{x[0]}</b>
+                <time>{x[2]}</time>
+              </header>
+              <p>{x[1]}</p>
+              <span>İlker Duran</span>
+            </article>
+          ))}
+          <div className="rubricMini">
+            <b>Güncel rubrik</b>
+            {[
+              ["İşlevsellik", 92],
+              ["Kod kalitesi", 84],
+              ["Test", 78],
+              ["Dokümantasyon", 88],
+            ].map((x) => (
+              <span key={String(x[0])}>
+                {x[0]}
+                <em>%{x[1]}</em>
+              </span>
+            ))}
+          </div>
+          <button onClick={() => go("passport")}>
+            Skill Passport kanıtı →
+          </button>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function Achievements({ note }: any) {
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>AKADEMİK OYUNLAŞTIRMA</small>
+          <h1>Rozetler ve ünvanlar</h1>
+          <p>
+            Doğrulanmış uygulama, proje, mentorluk ve akademik katkıların
+            ödüllendirilir.
+          </p>
+        </div>
+        <strong>
+          #5<small>sezon sırası</small>
+        </strong>
+      </div>
+      <div className="rankHero">
+        <div>
+          <small>MEVCUT ÜNVAN</small>
+          <h2>Problem Çözücü</h2>
+          <p>Seviye 12 · 2.840 XP</p>
+          <div>
+            <i style={{ width: "72%" }} />
+          </div>
+          <span>Uygulama Geliştirici ünvanına 460 XP</span>
+        </div>
+        <i>♛</i>
+      </div>
+      <div className="achievementGrid">
+        <section>
+          <header>
+            <div>
+              <small>ROZET KOLEKSİYONU</small>
+              <h2>9 / 18 kazanıldı</h2>
+            </div>
+          </header>
+          <div className="badgeGrid">
+            {[
+              ["⚡", "Hızlı Başlangıç", true],
+              ["⌘", "Git Ustası", true],
+              ["◆", "Proje Mimarı", true],
+              ["♧", "Yardımsever", true],
+              ["◎", "Hata Avcısı", false],
+              ["♛", "Code Mentor", false],
+            ].map((x) => (
+              <article
+                className={x[2] ? "earned" : "locked"}
+                key={String(x[1])}
+              >
+                <i>{x[0]}</i>
+                <b>{x[1]}</b>
+                <span>{x[2] ? "Kazanıldı" : "Kilitli"}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+        <aside className="xpRules">
+          <small>XP KURALLARI</small>
+          <h2>Puan nasıl kazanılır?</h2>
+          {[
+            ["Uygulama testleri", "+40–120"],
+            ["Doğrulanmış proje", "+300"],
+            ["Kod incelemesi", "+50"],
+            ["7 günlük seri", "+100"],
+            ["Boss Challenge", "+320"],
+          ].map((x) => (
+            <article key={x[0]}>
+              <span>{x[0]}</span>
+              <b>{x[1]} XP</b>
+            </article>
+          ))}
+          <button onClick={() => note("XP geçmişi açıldı.")}>
+            XP geçmişim →
+          </button>
+        </aside>
+      </div>
+      <section className="titleTimeline">
+        <small>ÜNVAN YOLCULUĞU</small>
+        <div>
+          {[
+            "Çırak",
+            "Kod Kaşifi",
+            "Problem Çözücü",
+            "Uygulama Geliştirici",
+            "Teknoloji Uzmanı",
+            "DOU Code Mentor",
+          ].map((x, i) => (
+            <article className={i < 3 ? "done" : i === 3 ? "next" : ""} key={x}>
+              <i>{i < 3 ? "✓" : i + 1}</i>
+              <b>{x}</b>
+            </article>
+          ))}
+        </div>
+      </section>
+    </section>
+  );
+}
+
+function Settings({ note }: any) {
+  const [saved, setSaved] = useState(false);
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>PROFİL & TERCİHLER</small>
+          <h1>Hesap ayarları</h1>
+          <p>Profil, öğrenme hedefi, bildirim ve görünürlük ayarları.</p>
+        </div>
+      </div>
+      <div className="settingsLayout">
+        <aside>
+          {[
+            "Profil",
+            "Öğrenme",
+            "Bildirimler",
+            "Gizlilik",
+            "Bağlı hesaplar",
+          ].map((x, i) => (
+            <button className={i === 0 ? "on" : ""} key={x}>
+              {x}
+            </button>
+          ))}
+        </aside>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSaved(true);
+            note("Ayarların kaydedildi.");
+          }}
+        >
+          <section className="profileEdit">
+            <i>AY</i>
+            <div>
+              <h2>Profil bilgileri</h2>
+              <p>Skill Passport’ta görünen akademik bilgiler.</p>
+            </div>
+          </section>
+          <div className="formGrid">
+            <label>
+              Ad soyad
+              <input defaultValue="Ayşe Yılmaz" />
+            </label>
+            <label>
+              Öğrenci numarası
+              <input defaultValue="202601284" disabled />
+            </label>
+            <label>
+              Kurumsal e-posta
+              <input defaultValue="ayse.yilmaz@dogus.edu.tr" disabled />
+            </label>
+            <label>
+              Hedef rol
+              <select>
+                <option>Backend Developer</option>
+                <option>Veri Analisti</option>
+              </select>
+            </label>
+          </div>
+          <div className="settingToggles">
+            {[
+              ["Günlük plan hatırlatması", "Her gün 09:00"],
+              ["Teslim uyarıları", "24 ve 2 saat önce"],
+              ["Skill Passport görünürlüğü", "Bağlantıya sahip kişiler"],
+            ].map((x) => (
+              <label key={x[0]}>
+                <span>
+                  <b>{x[0]}</b>
+                  <small>{x[1]}</small>
+                </span>
+                <input type="checkbox" defaultChecked />
+              </label>
+            ))}
+          </div>
+          <footer>
+            <span>
+              {saved ? "✓ Değişiklikler kaydedildi" : "Değişiklik yapılmadı"}
+            </span>
+            <button>Kaydet</button>
+          </footer>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function HelpCenter({ note }: any) {
+  const [q, setQ] = useState("");
+  const topics = [
+    ["</>", "Kod Laboratuvarı"],
+    ["◆", "Proje teslimi"],
+    ["✦", "AI Kod Koçu"],
+    ["◈", "Skill Passport"],
+    ["♧", "Mentorluk"],
+    ["?", "Teknik destek"],
+  ];
+  return (
+    <section>
+      <div className="helpHero">
+        <small>DOU CODELAB DESTEK</small>
+        <h1>Nasıl yardımcı olabiliriz?</h1>
+        <label>
+          ⌕
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Bir özellik veya sorun ara..."
+          />
+        </label>
+      </div>
+      <div className="helpTopics">
+        {topics
+          .filter((x) =>
+            x[1].toLocaleLowerCase("tr").includes(q.toLocaleLowerCase("tr")),
+          )
+          .map((x) => (
+            <button key={x[1]} onClick={() => note(`${x[1]} rehberi açıldı.`)}>
+              <i>{x[0]}</i>
+              <b>{x[1]}</b>
+              <em>→</em>
+            </button>
+          ))}
+      </div>
+      <div className="faqGrid">
+        <section>
+          {[
+            "Kodum neden testten geçmiyor?",
+            "Projeyi nasıl tekrar teslim ederim?",
+            "XP nasıl hesaplanır?",
+            "Skill Passport’u kimler görebilir?",
+          ].map((x) => (
+            <details key={x}>
+              <summary>{x}</summary>
+              <p>
+                İlgili ekranın yönergelerini kontrol et. Sorun sürerse destek
+                talebine kod ve ekran görüntüsü ekle.
+              </p>
+            </details>
+          ))}
+        </section>
+        <aside>
+          <h2>Çözüm bulamadın mı?</h2>
+          <p>Destek ekibine veya Code Mentor’a ulaş.</p>
+          <button onClick={() => note("Destek talebi oluşturuldu.")}>
+            Destek talebi oluştur
+          </button>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function SystemReady({ note }: any) {
+  const items = [
+    ["Arayüz ve rol panelleri", "Hazır"],
+    ["İçerik & soru motoru", "Hazır"],
+    ["ÖÇ–PÇ ve MEDEK", "Hazır"],
+    ["Office 365 / Entra ID", "Sunucu"],
+    ["PostgreSQL kalıcı veri", "Sunucu"],
+    ["Güvenli kod çalıştırma", "Sunucu"],
+    ["AI Kod Koçu API", "Sunucu"],
+    ["OBS / LMS entegrasyonu", "Planlandı"],
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>CANLI KURULUMA HAZIRLIK</small>
+          <h1>Sistem Hazırlık Merkezi</h1>
+          <p>
+            Prototip tamamlandı; okul altyapısında etkinleştirilecek servisleri
+            takip edin.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Bilgi İşlem gereksinim özeti hazırlandı.")}
+        >
+          Gereksinim özeti ↓
+        </button>
+      </div>
+      <div className="readyHero">
+        <div>
+          <small>PROTOTİP HAZIRLIK</small>
+          <strong>%92</strong>
+          <div>
+            <i style={{ width: "92%" }} />
+          </div>
+          <p>
+            Ürün, kurumsal kimlik doğrulama ve sunucu servislerini bekliyor.
+          </p>
+        </div>
+        <aside>
+          ✓
+          <span>
+            <b>Sunucuya taşımaya hazır</b>
+            <small>Arayüz, iş akışları ve veri modeli tamam</small>
+          </span>
+        </aside>
+      </div>
+      <section className="readinessList">
+        <header>
+          <span>Bileşen</span>
+          <span>Durum</span>
+          <span>Sonraki işlem</span>
+        </header>
+        {items.map((x) => (
+          <article key={x[0]}>
+            <div>
+              <i className={x[1] === "Hazır" ? "done" : "server"}>
+                {x[1] === "Hazır" ? "✓" : "○"}
+              </i>
+              <b>{x[0]}</b>
+            </div>
+            <em>{x[1]}</em>
+            <span>
+              {x[1] === "Hazır"
+                ? "Ek işlem yok"
+                : x[1] === "Sunucu"
+                  ? "Bilgi İşlem erişimi"
+                  : "Entegrasyon takvimi"}
+            </span>
+          </article>
+        ))}
+      </section>
+      <div className="deploymentSteps">
+        {[
+          ["01", "Altyapı", "Linux, SSL, PostgreSQL"],
+          ["02", "Kimlik", "Entra ID ve @dogus.edu.tr"],
+          ["03", "Servisler", "Kod, dosya ve AI"],
+          ["04", "Pilot", "1 bölüm, 2 ders"],
+          ["05", "Yaygınlaştırma", "OBS/LMS ve programlar"],
+        ].map((x) => (
+          <article key={x[0]}>
+            <i>{x[0]}</i>
+            <span>
+              <b>{x[1]}</b>
+              <small>{x[2]}</small>
+            </span>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function LearningPlan({ note, go }: any) {
   const [done, setDone] = useState([true, false, false, false]);
   const tasks = [
