@@ -4,6 +4,7 @@ type Role = "student" | "teacher";
 type View =
   | "home"
   | "paths"
+  | "lesson"
   | "tasks"
   | "calendar"
   | "lab"
@@ -128,6 +129,73 @@ const topics = [
   "Listeler",
   "Dosya işlemleri",
 ];
+const lessonTracks: Record<string, string[]> = {
+  "BLP 101": ["Algoritma mantığı", "Değişkenler", "Koşullar", "Döngüler", "Fonksiyonlar"],
+  "BLP 105": ["Veri modeli", "SELECT", "Filtreleme", "JOIN", "GROUP BY"],
+  "BLP 203": ["Nesne mantığı", "Sınıflar", "Metotlar", "Kalıtım", "Arayüzler"],
+  "BLP 108": ["HTML iskeleti", "CSS seçiciler", "Flexbox", "CSS Grid", "Duyarlı tasarım"],
+  "BLP 276": ["Python tekrarı", "NumPy", "Pandas", "Veri temizleme", "Görselleştirme"],
+  "BLT 103": ["OSI modeli", "TCP/IP", "IPv4", "Alt ağlar", "Yönlendirme"],
+};
+const lessonContent: Record<
+  string,
+  { intro: string; objective: string; example: string; question: string; options: string[]; correct: number; practice: string }
+> = {
+  "BLP 101": {
+    intro: "Döngüler, aynı işlem adımlarını belirli bir koşul boyunca tekrar etmemizi sağlar. Python'da for döngüsü bir koleksiyondaki değerleri sırayla işler.",
+    objective: "Bir listedeki değerleri dolaşmak, koşulla filtrelemek ve sonucu ekrana yazdırmak.",
+    example: "sayilar = [4, 7, 12]\nfor sayi in sayilar:\n    if sayi % 2 == 0:\n        print(sayi)",
+    question: "Bir sayının çift olduğunu kontrol eden doğru koşul hangisidir?",
+    options: ["sayi / 2 == 0", "sayi % 2 == 0", "sayi == 2", "sayi % 2 == 1"],
+    correct: 1,
+    practice: "Listedeki yalnızca çift sayıları bulan kodu tamamla ve üç otomatik testi geçir.",
+  },
+  "BLP 105": {
+    intro: "GROUP BY, aynı değere sahip satırları gruplar ve COUNT, SUM veya AVG gibi özet fonksiyonlarla analiz eder.",
+    objective: "Satış kayıtlarını kategoriye göre gruplamak ve toplam satış tutarını hesaplamak.",
+    example: "SELECT kategori, SUM(tutar) AS toplam\nFROM satislar\nGROUP BY kategori;",
+    question: "Gruplanan kayıtların toplamını almak için hangi fonksiyon kullanılır?",
+    options: ["ORDER", "SUM", "WHERE", "JOIN"],
+    correct: 1,
+    practice: "Her ürün kategorisinin toplam cirosunu büyükten küçüğe sıralayan sorguyu yaz.",
+  },
+  "BLP 203": {
+    intro: "Sınıf, ortak özellik ve davranışları tek bir yapı altında tanımlayan nesne şablonudur.",
+    objective: "Alanları ve metotları olan yeniden kullanılabilir bir sınıf oluşturmak.",
+    example: "class Kitap {\n  string Ad;\n  void Yazdir() { Console.WriteLine(Ad); }\n}",
+    question: "Bir sınıftan üretilen somut örneğe ne ad verilir?",
+    options: ["Döngü", "Nesne", "Paket", "Koşul"],
+    correct: 1,
+    practice: "Kitap adı ve yazarı tutan, bilgileri yazdıran bir Kütüphane sınıfı geliştir.",
+  },
+  "BLP 108": {
+    intro: "CSS Grid, satır ve sütunlardan oluşan iki boyutlu yerleşimleri okunabilir kurallarla kurmayı sağlar.",
+    objective: "Duyarlı bir kart alanını grid sütunları ve boşluklarla düzenlemek.",
+    example: ".kartlar {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}",
+    question: "Grid sütunlarını tanımlayan özellik hangisidir?",
+    options: ["grid-template-columns", "font-grid", "align-text", "display-column"],
+    correct: 0,
+    practice: "Masaüstünde üç, mobilde tek sütun gösteren öğrenci kartları oluştur.",
+  },
+  "BLP 276": {
+    intro: "Pandas, tablo biçimindeki veriyi DataFrame yapısıyla okuma, temizleme ve analiz etme imkânı verir.",
+    objective: "CSV verisini okumak, eksik değerleri incelemek ve temel özet üretmek.",
+    example: "import pandas as pd\ndf = pd.read_csv('notlar.csv')\nprint(df.describe())",
+    question: "CSV dosyasını DataFrame'e aktaran fonksiyon hangisidir?",
+    options: ["pd.open", "pd.read_csv", "pd.table", "pd.import"],
+    correct: 1,
+    practice: "Not verisini oku, eksik değerleri temizle ve ders ortalamalarını hesapla.",
+  },
+  "BLT 103": {
+    intro: "TCP/IP, cihazların ağ üzerinde adreslenmesini ve verinin güvenilir biçimde taşınmasını sağlayan protokol ailesidir.",
+    objective: "IP, taşıma ve uygulama katmanlarının temel görevlerini ayırt etmek.",
+    example: "İstemci → TCP bağlantısı → IP yönlendirme → Sunucu\nHTTP: 80 · HTTPS: 443 · SSH: 22",
+    question: "Güvenilir ve bağlantı yönelimli taşıma protokolü hangisidir?",
+    options: ["UDP", "ARP", "TCP", "ICMP"],
+    correct: 2,
+    practice: "Bir web isteğinin istemciden sunucuya giderken geçtiği katmanları sırala.",
+  },
+};
 function Mark() {
   return (
     <span className="mark">
@@ -193,7 +261,7 @@ export default function App() {
   }
   function open(c = selected) {
     setSelected(c);
-    setView("lab");
+    setView("lesson");
   }
   function run() {
     const ok =
@@ -450,6 +518,14 @@ export default function App() {
             query={query}
             clear={() => setQuery("")}
             open={open}
+          />
+        )}{" "}
+        {view === "lesson" && (
+          <LessonPlayer
+            key={selected.code}
+            course={selected}
+            go={setView}
+            note={note}
           />
         )}{" "}
         {view === "tasks" && (
@@ -741,6 +817,272 @@ function Course({ c, open }: any) {
         {c.progress ? "Devam et" : "Patikaya başla"} →
       </button>
     </article>
+  );
+}
+function LessonPlayer({ course, go, note }: any) {
+  const track = lessonTracks[course.code] ?? topics.slice(0, 5);
+  const content = lessonContent[course.code] ?? lessonContent["BLP 101"];
+  const [topicIndex, setTopicIndex] = useState(() =>
+    Math.max(0, track.findIndex((item) => item === course.topic)),
+  );
+  const [phase, setPhase] = useState(0);
+  const [answer, setAnswer] = useState<number | null>(null);
+  const [completed, setCompleted] = useState<number[]>([]);
+  const phases = ["Anlatım", "Örnek", "Mini kontrol", "Uygulama", "Tamamlandı"];
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem(`dou-codelab:lessons:${course.code}`);
+    if (raw) {
+      try {
+        setCompleted(JSON.parse(raw));
+      } catch {
+        setCompleted([]);
+      }
+    }
+  }, [course.code]);
+
+  function chooseTopic(index: number) {
+    if (index !== topicIndex) {
+      note("Bu konu, mevcut dersi tamamladıktan sonra açılacak.");
+      return;
+    }
+    setTopicIndex(index);
+    setPhase(completed.includes(index) ? 4 : 0);
+    setAnswer(null);
+  }
+  function finishTopic() {
+    const next = Array.from(new Set([...completed, topicIndex]));
+    setCompleted(next);
+    window.localStorage.setItem(
+      `dou-codelab:lessons:${course.code}`,
+      JSON.stringify(next),
+    );
+    setPhase(4);
+    note(`${track[topicIndex]} tamamlandı · +40 XP`);
+  }
+  function nextTopic() {
+    go("paths");
+    note("İlerlemen kaydedildi. Sıradaki konu patikanda açıldı.");
+  }
+
+  return (
+    <section className="lessonPlayer">
+      <header className="lessonTopbar">
+        <button onClick={() => go("paths")}>← Dersler</button>
+        <div>
+          <small>{course.code}</small>
+          <b>{course.name}</b>
+        </div>
+        <span>
+          {completed.length} / {track.length} konu
+        </span>
+      </header>
+      <aside className="lessonOutline">
+        <small>DERS İÇERİĞİ</small>
+        <h2>{course.name}</h2>
+        <div className="lessonOverall">
+          <span>
+            <b>%{Math.round((completed.length / track.length) * 100)}</b>
+            tamamlandı
+          </span>
+          <i>
+            <em
+              style={{ width: `${(completed.length / track.length) * 100}%` }}
+            />
+          </i>
+        </div>
+        <nav>
+          {track.map((item, index) => (
+            <button
+              key={item}
+              className={`${topicIndex === index ? "on" : ""} ${completed.includes(index) ? "done" : ""} ${topicIndex !== index ? "locked" : ""}`}
+              onClick={() => chooseTopic(index)}
+            >
+              <i>{completed.includes(index) ? "✓" : index + 1}</i>
+              <span>
+                <b>{item}</b>
+                <small>
+                  {completed.includes(index)
+                    ? "Tamamlandı"
+                    : index === topicIndex
+                      ? "Devam ediyor"
+                      : "Sırayla açılır"}
+                </small>
+              </span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+      <main className="lessonStage">
+        <div className="phaseRail">
+          {phases.map((item, index) => (
+            <span
+              key={item}
+              className={index === phase ? "on" : index < phase ? "done" : ""}
+            >
+              <i>{index < phase ? "✓" : index + 1}</i>
+              {item}
+            </span>
+          ))}
+        </div>
+        <article className="lessonCanvas">
+          <div className="lessonMeta">
+            <span>{track[topicIndex]}</span>
+            <small>Yaklaşık 10 dakika · 40 XP</small>
+          </div>
+          {phase === 0 && (
+            <>
+              <small className="eyebrow">01 · KONUYU ANLA</small>
+              <h1>{track[topicIndex]}</h1>
+              <p className="lessonLead">{content.intro}</p>
+              <div className="objectiveBox">
+                <i>◎</i>
+                <span>
+                  <b>Bu bölümün sonunda</b>
+                  <p>{content.objective}</p>
+                </span>
+              </div>
+              <div className="conceptCards">
+                <article>
+                  <b>Neden önemli?</b>
+                  <p>Gerçek projelerde tekrar eden işi azaltır ve çözümü okunabilir hale getirir.</p>
+                </article>
+                <article>
+                  <b>Sık yapılan hata</b>
+                  <p>Sözdizimini ezberleyip problemin giriş–işlem–çıktı akışını kurmadan başlamak.</p>
+                </article>
+              </div>
+              <button className="lessonNext" onClick={() => setPhase(1)}>
+                Örneği incele →
+              </button>
+            </>
+          )}
+          {phase === 1 && (
+            <>
+              <small className="eyebrow">02 · ÇALIŞAN ÖRNEK</small>
+              <h1>Adım adım görelim</h1>
+              <p className="lessonLead">
+                Kodu veya yapılandırmayı satır satır incele; önemli bölüm renkli
+                açıklamalarla ayrıldı.
+              </p>
+              <div className="guidedCode">
+                <header>
+                  <span>örnek</span>
+                  <button onClick={() => note("Örnek panoya kopyalandı.")}>
+                    Kopyala
+                  </button>
+                </header>
+                <pre>{content.example}</pre>
+              </div>
+              <ol className="codeSteps">
+                <li><i>1</i><span><b>Girdiyi tanı</b><small>İşlenecek veri veya isteği belirle.</small></span></li>
+                <li><i>2</i><span><b>Kuralı uygula</b><small>Problemi küçük ve sıralı adımlara böl.</small></span></li>
+                <li><i>3</i><span><b>Çıktıyı doğrula</b><small>Beklenen sonuçla gerçek sonucu karşılaştır.</small></span></li>
+              </ol>
+              <div className="lessonActions">
+                <button onClick={() => setPhase(0)}>← Geri</button>
+                <button className="lessonNext" onClick={() => setPhase(2)}>
+                  Kendini kontrol et →
+                </button>
+              </div>
+            </>
+          )}
+          {phase === 2 && (
+            <>
+              <small className="eyebrow">03 · MİNİ KONTROL</small>
+              <h1>Bir dakikada kontrol et</h1>
+              <p className="lessonLead">{content.question}</p>
+              <div className="knowledgeOptions">
+                {content.options.map((item, index) => (
+                  <button
+                    key={item}
+                    className={
+                      answer === index
+                        ? index === content.correct
+                          ? "correct"
+                          : "wrong"
+                        : ""
+                    }
+                    onClick={() => setAnswer(index)}
+                  >
+                    <i>{String.fromCharCode(65 + index)}</i>
+                    <span>{item}</span>
+                    {answer === index && <em>{index === content.correct ? "✓" : "×"}</em>}
+                  </button>
+                ))}
+              </div>
+              {answer !== null && (
+                <div className={answer === content.correct ? "quizNote ok" : "quizNote"}>
+                  <b>{answer === content.correct ? "Doğru cevap" : "Bir kez daha düşün"}</b>
+                  <span>
+                    {answer === content.correct
+                      ? "Kavramı doğru yorumladın. Şimdi kısa uygulamaya geçebilirsin."
+                      : "Örnekte kullanılan ana işlemi tekrar incele ve yeniden seç."}
+                  </span>
+                </div>
+              )}
+              <div className="lessonActions">
+                <button onClick={() => setPhase(1)}>← Örneğe dön</button>
+                <button
+                  className="lessonNext"
+                  disabled={answer !== content.correct}
+                  onClick={() => setPhase(3)}
+                >
+                  Uygulamaya geç →
+                </button>
+              </div>
+            </>
+          )}
+          {phase === 3 && (
+            <>
+              <small className="eyebrow">04 · UYGULAYARAK ÖĞREN</small>
+              <h1>Sıra sende</h1>
+              <p className="lessonLead">{content.practice}</p>
+              <div className="practiceBrief">
+                <div>
+                  <span><i>1</i> Görevi analiz et</span>
+                  <span><i>2</i> Çözümü tasarla</span>
+                  <span><i>3</i> Testlerle doğrula</span>
+                </div>
+                <aside>
+                  <small>BAŞARI ÖLÇÜTÜ</small>
+                  <b>En az 3/3 test</b>
+                  <p>Çıktı · doğru kural · okunabilir çözüm</p>
+                </aside>
+              </div>
+              <div className="lessonActions">
+                <button onClick={() => setPhase(2)}>← Kontrole dön</button>
+                <button className="lessonNext" onClick={finishTopic}>
+                  Uygulamayı tamamla →
+                </button>
+              </div>
+            </>
+          )}
+          {phase === 4 && (
+            <div className="lessonComplete">
+              <i>✓</i>
+              <small>KONU TAMAMLANDI</small>
+              <h1>Harika ilerliyorsun!</h1>
+              <p>
+                {track[topicIndex]} için anlatım, örnek, kontrol ve uygulama
+                adımlarını tamamladın.
+              </p>
+              <div>
+                <span><b>+40</b><small>XP</small></span>
+                <span><b>1</b><small>Tamamlanan konu</small></span>
+                <span><b>✓</b><small>Skill Passport kanıtı</small></span>
+              </div>
+              <section>
+                <button onClick={() => go("lab")}>Kod laboratuvarını aç</button>
+                <button className="lessonNext" onClick={nextTopic}>
+                  Patikaya dön →
+                </button>
+              </section>
+            </div>
+          )}
+        </article>
+      </main>
+    </section>
   );
 }
 function Tasks({ role, note, open }: any) {
