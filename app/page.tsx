@@ -37,8 +37,8 @@ const courses = [
     code: "BLP 101",
     tag: "PY",
     name: "Algoritma ve Programlama",
-    topic: "Döngüler",
-    progress: 46,
+    topic: "Algoritmaya Giriş",
+    progress: 0,
     color: "#3478a8",
     lessons: 26,
   },
@@ -130,7 +130,16 @@ const topics = [
   "Dosya işlemleri",
 ];
 const lessonTracks: Record<string, string[]> = {
-  "BLP 101": ["Algoritma mantığı", "Değişkenler", "Koşullar", "Döngüler", "Fonksiyonlar"],
+  "BLP 101": [
+    "Algoritmaya Giriş",
+    "Akış Diyagramları",
+    "Değişkenler ve Veri Tipleri",
+    "Operatörler",
+    "Koşullu İfadeler",
+    "Döngüler",
+    "Listeler",
+    "Fonksiyonlar",
+  ],
   "BLP 105": ["Veri modeli", "SELECT", "Filtreleme", "JOIN", "GROUP BY"],
   "BLP 203": ["Nesne mantığı", "Sınıflar", "Metotlar", "Kalıtım", "Arayüzler"],
   "BLP 108": ["HTML iskeleti", "CSS seçiciler", "Flexbox", "CSS Grid", "Duyarlı tasarım"],
@@ -196,6 +205,129 @@ const lessonContent: Record<
     practice: "Bir web isteğinin istemciden sunucuya giderken geçtiği katmanları sırala.",
   },
 };
+const algorithmTopicContent: Record<
+  string,
+  {
+    intro: string;
+    objective: string;
+    example: string;
+    question: string;
+    options: string[];
+    correct: number;
+    practice: string;
+  }
+> = {
+  "Algoritmaya Giriş": {
+    intro:
+      "Algoritma, bir problemi çözmek için izlenen sonlu, sıralı ve açık adımlar bütünüdür. Kod yazmadan önce çözümün girdisini, işlemini ve çıktısını belirlemek hataları ciddi biçimde azaltır.",
+    objective:
+      "Bir günlük yaşam problemini giriş–işlem–çıkış modeline ayırmak ve çözüm adımlarını doğru sıraya koymak.",
+    example:
+      "Problem: İki sınav notunun ortalaması\n1. İlk notu al\n2. İkinci notu al\n3. Topla ve ikiye böl\n4. Ortalamayı göster",
+    question: "İyi bir algoritmanın temel özelliği hangisidir?",
+    options: [
+      "Sonsuza kadar sürmesi",
+      "Adımlarının açık ve sonlu olması",
+      "Yalnızca Python ile yazılması",
+      "Her zaman tek satır olması",
+    ],
+    correct: 1,
+    practice:
+      "Bir öğrencinin vize ve final notunu alıp başarı ortalamasını hesaplayan algoritmayı giriş–işlem–çıkış biçiminde yaz.",
+  },
+  "Akış Diyagramları": {
+    intro:
+      "Akış diyagramı, algoritmadaki işlem ve kararları standart şekillerle görselleştirir. Oval başlangıç/bitişi, paralelkenar veri girişini, dikdörtgen işlemi, eşkenar dörtgen kararı gösterir.",
+    objective:
+      "Başlangıç, veri girişi, işlem, karar ve çıktı sembollerini doğru sırada kullanmak.",
+    example:
+      "(Başla) → /Sayıyı al/ → <Sayı > 0?>\nEvet → [Pozitif yaz]\nHayır → [Pozitif değil yaz] → (Bitir)",
+    question: "Karar verme adımı hangi şekille gösterilir?",
+    options: ["Dikdörtgen", "Eşkenar dörtgen", "Oval", "Paralelkenar"],
+    correct: 1,
+    practice:
+      "Girilen sayının tek mi çift mi olduğunu belirleyen akış diyagramının adımlarını sırala.",
+  },
+  "Değişkenler ve Veri Tipleri": {
+    intro:
+      "Değişken, program çalışırken kullanılan veriyi isimli bir alanda tutar. Tam sayı, ondalıklı sayı, metin ve mantıksal değerler farklı işlemler için farklı veri tipleriyle temsil edilir.",
+    objective:
+      "Veriye anlamlı değişken adı vermek ve değere uygun veri tipini seçmek.",
+    example:
+      "ogrenci_adi = 'Ayşe'      # str\nyas = 19                  # int\nortalama = 78.5           # float\nbasarili = True           # bool",
+    question: "78.5 değeri için uygun veri tipi hangisidir?",
+    options: ["str", "bool", "float", "list"],
+    correct: 2,
+    practice:
+      "Bir öğrenci için ad, numara, not ortalaması ve aktiflik durumunu uygun veri tipleriyle tanımla.",
+  },
+  Operatörler: {
+    intro:
+      "Operatörler değerler üzerinde hesaplama, karşılaştırma ve mantıksal kontrol yapar. +, -, *, / aritmetik; ==, !=, > karşılaştırma; and, or, not mantıksal operatörlerdir.",
+    objective:
+      "Aritmetik sonucu hesaplamak ve birden fazla koşulu mantıksal operatörlerle birleştirmek.",
+    example:
+      "vize = 70\nfinal = 80\nortalama = vize * 0.4 + final * 0.6\nbasarili = ortalama >= 60 and final >= 50",
+    question: "İki koşulun da doğru olmasını isteyen operatör hangisidir?",
+    options: ["or", "not", "and", "%"],
+    correct: 2,
+    practice:
+      "Vizenin %40'ı ve finalin %60'ı ile ortalama hesapla; ortalama 60 ve üzeriyse True üret.",
+  },
+  "Koşullu İfadeler": {
+    intro:
+      "Koşullu ifadeler programın farklı durumlarda farklı yollar izlemesini sağlar. if ilk koşulu, elif alternatifleri, else ise hiçbir koşul sağlanmadığında çalışacak bölümü tanımlar.",
+    objective:
+      "Birden fazla karar durumunu if–elif–else yapısıyla doğru sırada değerlendirmek.",
+    example:
+      "if ortalama >= 85:\n    print('AA')\nelif ortalama >= 60:\n    print('Başarılı')\nelse:\n    print('Başarısız')",
+    question: "Hiçbir koşul sağlanmadığında hangi blok çalışır?",
+    options: ["if", "elif", "else", "for"],
+    correct: 2,
+    practice:
+      "0–100 arasındaki nota göre Başarısız, Geçer, İyi ve Pekiyi sonuçlarını üreten karar yapısını kur.",
+  },
+  Döngüler: {
+    intro:
+      "Döngüler aynı işlem adımlarını tekrarlar. for belirli bir koleksiyon veya aralık üzerinde, while ise bir koşul doğru kaldığı sürece çalışır.",
+    objective:
+      "Bir listedeki değerleri dolaşmak, koşulla filtrelemek ve sonucu ekrana yazdırmak.",
+    example:
+      "sayilar = [4, 7, 12]\nfor sayi in sayilar:\n    if sayi % 2 == 0:\n        print(sayi)",
+    question: "Bir sayının çift olduğunu kontrol eden doğru koşul hangisidir?",
+    options: ["sayi / 2 == 0", "sayi % 2 == 0", "sayi == 2", "sayi % 2 == 1"],
+    correct: 1,
+    practice:
+      "1–100 arasındaki üçe tam bölünen sayıları yazdır ve kaç tane olduklarını hesapla.",
+  },
+  Listeler: {
+    intro:
+      "Liste, birden fazla değeri sıralı biçimde tek değişkende saklar. İndeksle erişim, append ile ekleme, remove ile silme ve döngüyle dolaşma yapılabilir.",
+    objective:
+      "Liste oluşturmak, eleman eklemek, filtrelemek ve temel özet değerleri hesaplamak.",
+    example:
+      "notlar = [70, 85, 55]\nnotlar.append(90)\nortalama = sum(notlar) / len(notlar)",
+    question: "Listenin sonuna yeni eleman ekleyen metot hangisidir?",
+    options: ["add", "append", "push", "insertLast"],
+    correct: 1,
+    practice:
+      "Not listesindeki en yüksek, en düşük ve ortalama değeri hesaplayan programı yaz.",
+  },
+  Fonksiyonlar: {
+    intro:
+      "Fonksiyon, belirli bir işi yapan yeniden kullanılabilir kod bloğudur. Parametrelerle veri alır, return ile sonuç döndürebilir ve tekrar eden kodu azaltır.",
+    objective:
+      "Parametre alan, hesaplama yapan ve sonuç döndüren temiz bir fonksiyon yazmak.",
+    example:
+      "def ortalama_hesapla(vize, final):\n    sonuc = vize * 0.4 + final * 0.6\n    return sonuc",
+    question: "Fonksiyondan sonuç döndürmek için hangi ifade kullanılır?",
+    options: ["print", "return", "input", "break"],
+    correct: 1,
+    practice:
+      "İki not ve ağırlık değerlerini parametre olarak alan, ortalama döndüren bir fonksiyon oluştur.",
+  },
+};
+
 const labConfigs: Record<
   string,
   {
@@ -741,8 +873,8 @@ function Home({ open, go }: { open: (c: any) => void; go: (v: View) => void }) {
         <button onClick={() => open(courses[0])}>
           <i>&lt;/&gt;</i>
           <span>
-            <b>Kod yaz</b>
-            <small>Laboratuvarı aç</small>
+            <b>Derse başla</b>
+            <small>1. konudan ilerle</small>
           </span>
           <em>→</em>
         </button>
@@ -774,23 +906,23 @@ function Home({ open, go }: { open: (c: any) => void; go: (v: View) => void }) {
       <div className="homeGrid">
         <article className="continue">
           <div>
-            <small>ŞİMDİ DEVAM ET · BLP 101</small>
-            <h2>Döngüler ve koşullu tekrar</h2>
+            <small>ŞİMDİ BAŞLA · BLP 101</small>
+            <h2>Algoritmaya Giriş</h2>
             <p>
-              Çift sayıları filtreleyen algoritmayı tamamla ve testleri
-              çalıştır.
+              Problemi giriş, işlem ve çıkış adımlarına ayırarak ilk
+              algoritmanı oluştur.
             </p>
             <div className="bar">
-              <i style={{ width: "46%" }} />
+              <i style={{ width: "0%" }} />
             </div>
             <footer>
-              <span>%46 tamamlandı</span>
-              <button onClick={() => open(courses[0])}>Derse devam et →</button>
+              <span>1. konu · 10 dakika</span>
+              <button onClick={() => open(courses[0])}>Derse başla →</button>
             </footer>
           </div>
           <pre>
-            <b>for</b> sayi <i>in</i> sayilar:{"\n"} if sayi % 2 == 0:{"\n"}{" "}
-            print(sayi)
+            <b>Girdi</b> → <i>İşlem</i> → Çıktı{"\n"}Problemi tanı{"\n"}
+            Adımlara ayır{"\n"}Sonucu doğrula
           </pre>
         </article>
         <aside className="today">
@@ -948,14 +1080,19 @@ function Course({ c, open }: any) {
 }
 function LessonPlayer({ course, go, note }: any) {
   const track = lessonTracks[course.code] ?? topics.slice(0, 5);
-  const content = lessonContent[course.code] ?? lessonContent["BLP 101"];
   const [topicIndex, setTopicIndex] = useState(() =>
-    Math.max(0, track.findIndex((item) => item === course.topic)),
+    course.code === "BLP 101"
+      ? 0
+      : Math.max(0, track.findIndex((item) => item === course.topic)),
   );
   const [phase, setPhase] = useState(0);
   const [answer, setAnswer] = useState<number | null>(null);
   const [completed, setCompleted] = useState<number[]>([]);
   const phases = ["Anlatım", "Örnek", "Mini kontrol", "Uygulama", "Tamamlandı"];
+  const content =
+    course.code === "BLP 101"
+      ? algorithmTopicContent[track[topicIndex]]
+      : lessonContent[course.code] ?? lessonContent["BLP 101"];
 
   useEffect(() => {
     const raw = window.localStorage.getItem(`dou-codelab:lessons:${course.code}`);
@@ -969,7 +1106,7 @@ function LessonPlayer({ course, go, note }: any) {
   }, [course.code]);
 
   function chooseTopic(index: number) {
-    if (index !== topicIndex) {
+    if (course.code !== "BLP 101" && index !== topicIndex) {
       note("Bu konu, mevcut dersi tamamladıktan sonra açılacak.");
       return;
     }
@@ -988,8 +1125,16 @@ function LessonPlayer({ course, go, note }: any) {
     note(`${track[topicIndex]} tamamlandı · +40 XP`);
   }
   function nextTopic() {
+    if (topicIndex < track.length - 1) {
+      setTopicIndex((current) => current + 1);
+      setPhase(0);
+      setAnswer(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      note(`${track[topicIndex + 1]} konusu açıldı.`);
+      return;
+    }
     go("paths");
-    note("İlerlemen kaydedildi. Sıradaki konu patikanda açıldı.");
+    note("Algoritma ve Programlama temel modülü tamamlandı.");
   }
 
   return (
@@ -1022,7 +1167,7 @@ function LessonPlayer({ course, go, note }: any) {
           {track.map((item, index) => (
             <button
               key={item}
-              className={`${topicIndex === index ? "on" : ""} ${completed.includes(index) ? "done" : ""} ${topicIndex !== index ? "locked" : ""}`}
+              className={`${topicIndex === index ? "on" : ""} ${completed.includes(index) ? "done" : ""} ${course.code !== "BLP 101" && topicIndex !== index ? "locked" : ""}`}
               onClick={() => chooseTopic(index)}
             >
               <i>{completed.includes(index) ? "✓" : index + 1}</i>
@@ -1033,7 +1178,9 @@ function LessonPlayer({ course, go, note }: any) {
                     ? "Tamamlandı"
                     : index === topicIndex
                       ? "Devam ediyor"
-                      : "Sırayla açılır"}
+                      : course.code === "BLP 101"
+                        ? "8–12 dakika"
+                        : "Sırayla açılır"}
                 </small>
               </span>
             </button>
@@ -1200,9 +1347,13 @@ function LessonPlayer({ course, go, note }: any) {
                 <span><b>✓</b><small>Skill Passport kanıtı</small></span>
               </div>
               <section>
-                <button onClick={() => go("lab")}>Kod laboratuvarını aç</button>
+                {(course.code !== "BLP 101" || track[topicIndex] === "Döngüler") && (
+                  <button onClick={() => go("lab")}>Kod laboratuvarını aç</button>
+                )}
                 <button className="lessonNext" onClick={nextTopic}>
-                  Patikaya dön →
+                  {topicIndex < track.length - 1
+                    ? "Sonraki konu →"
+                    : "Patikayı tamamla →"}
                 </button>
               </section>
             </div>
