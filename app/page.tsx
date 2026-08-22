@@ -18,6 +18,11 @@ type View =
   | "reviews"
   | "career"
   | "questionbank"
+  | "learningplan"
+  | "mentoring"
+  | "notifications"
+  | "classroom"
+  | "reports"
   | "news"
   | "studio";
 const courses = [
@@ -293,6 +298,7 @@ export default function App() {
     ["home", "⌂", "Ana sayfa"],
     ["paths", "⌘", "Dersler & patikalar"],
     ["assessment", "◫", "Seviye tespiti"],
+    ["learningplan", "◌", "Akıllı planım"],
     ["tasks", "▣", "Görevlerim"],
     ["projects", "◆", "Projelerim"],
     ["calendar", "□", "Takvim"],
@@ -301,6 +307,8 @@ export default function App() {
     ["passport", "◈", "Skill Passport"],
     ["arena", "⚑", "CodeLab Arena"],
     ["career", "◎", "Kariyer eşleşmesi"],
+    ["mentoring", "♧", "Mentorluk"],
+    ["notifications", "◉", "Bildirim merkezi"],
     ["news", "◉", "Duyurular"],
   ];
   const teacherNav: any = [
@@ -308,9 +316,11 @@ export default function App() {
     ["questionbank", "▤", "Soru & uygulama bankası"],
     ["analytics", "▥", "Analitik merkez"],
     ["curriculum", "⌗", "ÖÇ–PÇ haritası"],
+    ["classroom", "♙", "Sınıf yönetimi"],
     ["tasks", "▣", "Görev yönetimi"],
     ["projects", "◆", "Proje inceleme"],
     ["reviews", "◇", "Kod inceleme"],
+    ["reports", "▦", "Rapor merkezi"],
     ["paths", "⌘", "Ders patikaları"],
     ["calendar", "□", "Ders takvimi"],
     ["progress", "↗", "Yayınlananlar"],
@@ -319,14 +329,14 @@ export default function App() {
   const navGroups =
     role === "student"
       ? [
-          ["ÖĞREN", studentNav.slice(0, 3)],
-          ["UYGULA", studentNav.slice(3, 8)],
-          ["GELİŞİM & KARİYER", studentNav.slice(8)],
+          ["ÖĞREN", studentNav.slice(0, 4)],
+          ["UYGULA", studentNav.slice(4, 9)],
+          ["GELİŞİM & KARİYER", studentNav.slice(9)],
         ]
       : [
-          ["ÜRET & YÖNET", teacherNav.slice(0, 4)],
-          ["DEĞERLENDİR", teacherNav.slice(4, 7)],
-          ["DERS AKIŞI", teacherNav.slice(7)],
+          ["ÜRET & YÖNET", teacherNav.slice(0, 5)],
+          ["DEĞERLENDİR", teacherNav.slice(5, 9)],
+          ["DERS AKIŞI", teacherNav.slice(9)],
         ];
   return (
     <main className="shell">
@@ -443,6 +453,13 @@ export default function App() {
         {view === "reviews" && <ReviewQueue note={note} />}{" "}
         {view === "career" && <CareerMatch note={note} go={setView} />}{" "}
         {view === "questionbank" && <QuestionBank note={note} />}{" "}
+        {view === "learningplan" && <LearningPlan note={note} go={setView} />}{" "}
+        {view === "mentoring" && <Mentoring note={note} />}{" "}
+        {view === "notifications" && (
+          <NotificationCenter note={note} go={setView} />
+        )}{" "}
+        {view === "classroom" && <Classroom note={note} />}{" "}
+        {view === "reports" && <ReportCenter note={note} />}{" "}
         {view === "news" && <News note={note} />}{" "}
         {view === "studio" && (
           <Studio
@@ -1784,6 +1801,599 @@ function Studio({
     </section>
   );
 }
+function LearningPlan({ note, go }: any) {
+  const [done, setDone] = useState([true, false, false, false]);
+  const tasks = [
+    ["Kısa tekrar", "Döngü koşulları", "6 dk", "Tekrar"],
+    ["Hata avı", "Sonsuz döngüyü düzelt", "12 dk", "ÖÇ4"],
+    ["Uygulama", "Liste filtreleme", "18 dk", "ÖÇ2"],
+    ["Mini ölçme", "5 soruluk ustalık kontrolü", "9 dk", "Test"],
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>KİŞİSELLEŞTİRİLMİŞ ÖĞRENME</small>
+          <h1>Akıllı çalışma planım</h1>
+          <p>
+            Ön testin, son hataların ve kazanım seviyelerine göre her gün
+            yeniden oluşturulur.
+          </p>
+        </div>
+        <aside>
+          ✦
+          <span>
+            <b>45 dakika</b>
+            <small>bugünkü odak</small>
+          </span>
+        </aside>
+      </div>
+      <div className="planHero">
+        <div>
+          <small>BUGÜNÜN ÖNCELİĞİ</small>
+          <h2>Hata ayıklama becerisini güçlendir</h2>
+          <p>
+            Son 6 uygulamada döngü bitiş koşullarında tekrar eden hata görüldü.
+            Bugünkü plan bu açığı kapatmaya odaklanıyor.
+          </p>
+          <div className="planSignals">
+            <span>ÖÇ4 · %58</span>
+            <span>3 tekrar eden hata</span>
+            <span>+180 XP</span>
+          </div>
+        </div>
+        <div className="masteryDial">
+          <strong>%68</strong>
+          <span>Haftalık ustalık</span>
+          <small>Geçen haftaya göre +9</small>
+        </div>
+      </div>
+      <div className="planGrid">
+        <section className="dailyPlan">
+          <header>
+            <div>
+              <small>ADIM ADIM PLAN</small>
+              <h2>Bugünün 4 görevi</h2>
+            </div>
+            <span>{done.filter(Boolean).length}/4 tamamlandı</span>
+          </header>
+          {tasks.map((t, i) => (
+            <button
+              className={done[i] ? "done" : ""}
+              key={t[0]}
+              onClick={() => {
+                const next = [...done];
+                next[i] = true;
+                setDone(next);
+                note(`${t[0]} tamamlandı. Planın güncellendi.`);
+              }}
+            >
+              <i>{done[i] ? "✓" : i + 1}</i>
+              <span>
+                <small>{t[3]}</small>
+                <b>
+                  {t[0]} · {t[1]}
+                </b>
+              </span>
+              <em>{t[2]}</em>
+              <strong>→</strong>
+            </button>
+          ))}
+        </section>
+        <aside className="gapPanel">
+          <small>BECERİ AÇIKLARI</small>
+          <h2>Neye odaklanıyoruz?</h2>
+          {[
+            ["Hata ayıklama", 58],
+            ["SQL gruplama", 64],
+            ["Git akışı", 68],
+            ["Python döngüler", 84],
+          ].map((x) => (
+            <article key={String(x[0])}>
+              <span>
+                <b>{x[0]}</b>
+                <em>%{x[1]}</em>
+              </span>
+              <div>
+                <i style={{ width: `${x[1]}%` }} />
+              </div>
+            </article>
+          ))}
+          <button onClick={() => go("assessment")}>
+            Ayrıntılı beceri analizim →
+          </button>
+        </aside>
+      </div>
+      <div className="adaptiveRule">
+        <i>⌁</i>
+        <div>
+          <b>Uyarlanabilir ilerleme kuralı</b>
+          <p>
+            ÖÇ4 ustalığın %70’e ulaşınca “Fonksiyonlar” modülünün ileri
+            uygulamaları otomatik açılacak.
+          </p>
+        </div>
+        <button onClick={() => note("Ustalık ölçütleri açıldı.")}>
+          Kuralı gör
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function Mentoring({ note }: any) {
+  const [request, setRequest] = useState(false);
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>İNSAN DESTEĞİ & CODE CLINIC</small>
+          <h1>Mentorluk Merkezi</h1>
+          <p>
+            Takıldığın kodu paylaş, akademisyen veya doğrulanmış Code Mentor’dan
+            yönlendirici geri bildirim al.
+          </p>
+        </div>
+        <button className="primary" onClick={() => setRequest(!request)}>
+          ＋ Yardım talebi
+        </button>
+      </div>
+      {request && (
+        <form
+          className="mentorRequest"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setRequest(false);
+            note("Yardım talebin mentor kuyruğuna alındı.");
+          }}
+        >
+          <label>
+            Konu
+            <input placeholder="Örn. Python döngüsünde koşul çalışmıyor" />
+          </label>
+          <div>
+            <label>
+              Ders
+              <select>
+                <option>BLP 101</option>
+                <option>BLP 105</option>
+              </select>
+            </label>
+            <label>
+              Aciliyet
+              <select>
+                <option>Normal</option>
+                <option>Bugün gerekli</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Açıklama
+            <textarea placeholder="Neyi denedin, hangi sonucu bekliyorsun?" />
+          </label>
+          <footer>
+            <button type="button" onClick={() => setRequest(false)}>
+              Vazgeç
+            </button>
+            <button>Talep oluştur</button>
+          </footer>
+        </form>
+      )}
+      <div className="mentorGrid">
+        <section className="activeHelp">
+          <header>
+            <div>
+              <small>AKTİF TALEPLERİM</small>
+              <h2>Devam eden görüşmeler</h2>
+            </div>
+            <span>2 açık</span>
+          </header>
+          {[
+            [
+              "Python for döngüsü",
+              "İlker Duran",
+              "Yanıt geldi · 8 dk önce",
+              "İD",
+            ],
+            [
+              "SQL GROUP BY sonucu",
+              "Zeynep Akın · Code Mentor",
+              "İnceleniyor",
+              "ZA",
+            ],
+          ].map((x) => (
+            <article key={x[0]}>
+              <i>{x[3]}</i>
+              <span>
+                <b>{x[0]}</b>
+                <small>
+                  {x[1]} · {x[2]}
+                </small>
+              </span>
+              <button onClick={() => note(`${x[0]} görüşmesi açıldı.`)}>
+                Mesajlar →
+              </button>
+            </article>
+          ))}
+        </section>
+        <aside className="clinic">
+          <small>SONRAKİ CODE CLINIC</small>
+          <h2>Canlı Hata Ayıklama</h2>
+          <p>
+            Salı · 16:00–16:40
+            <br />
+            B-204 Laboratuvar + çevrim içi
+          </p>
+          <div>
+            <span>İD</span>
+            <span>SA</span>
+            <span>+8</span>
+          </div>
+          <button onClick={() => note("Code Clinic takvimine eklendi.")}>
+            Yer ayır
+          </button>
+        </aside>
+      </div>
+      <section className="mentorRoster">
+        <header>
+          <div>
+            <small>DOU CODE MENTORLARI</small>
+            <h2>Uzmanlık alanına göre destek</h2>
+          </div>
+        </header>
+        {[
+          ["MK", "Mehmet Kaya", "Python · Algoritma", "4.9"],
+          ["ZA", "Zeynep Akın", "SQL · Veri", "4.8"],
+          ["EA", "Ece Aydın", "Web · JavaScript", "4.7"],
+        ].map((x) => (
+          <article key={x[1]}>
+            <i>{x[0]}</i>
+            <span>
+              <b>{x[1]}</b>
+              <small>{x[2]}</small>
+            </span>
+            <em>★ {x[3]}</em>
+            <button
+              onClick={() => note(`${x[1]} için yardım talebi hazırlandı.`)}
+            >
+              Destek iste
+            </button>
+          </article>
+        ))}
+      </section>
+    </section>
+  );
+}
+
+function NotificationCenter({ note, go }: any) {
+  const [filter, setFilter] = useState("Tümü");
+  const items = [
+    ["Teslim", "BLP 101 görevi bugün 23:59’da kapanıyor", "Bugün", "tasks"],
+    [
+      "Geri bildirim",
+      "REST API projen için revizyon istendi",
+      "12 dk",
+      "projects",
+    ],
+    ["Başarı", "Problem Çözücü ünvanını kazandın", "1 saat", "passport"],
+    ["Ders", "SQL patikasına 3 yeni uygulama eklendi", "Dün", "paths"],
+    ["Mentorluk", "Kod yardım talebine yanıt geldi", "Dün", "mentoring"],
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>TEK MERKEZDE AKADEMİK AKIŞ</small>
+          <h1>Bildirim Merkezi</h1>
+          <p>
+            Teslim, geri bildirim, ders, başarı ve mentorluk güncellemelerini
+            kaçırma.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Tüm bildirimler okundu olarak işaretlendi.")}
+        >
+          Tümünü okundu yap
+        </button>
+      </div>
+      <div className="notificationLayout">
+        <aside>
+          {[
+            "Tümü",
+            "Teslim",
+            "Geri bildirim",
+            "Ders",
+            "Başarı",
+            "Mentorluk",
+          ].map((x) => (
+            <button
+              className={filter === x ? "on" : ""}
+              onClick={() => setFilter(x)}
+              key={x}
+            >
+              {x}
+              <em>{x === "Tümü" ? 5 : x === "Teslim" ? 1 : ""}</em>
+            </button>
+          ))}
+        </aside>
+        <section>
+          {items
+            .filter((x) => filter === "Tümü" || x[0] === filter)
+            .map((x, i) => (
+              <button
+                className={i < 2 ? "unread" : ""}
+                key={x[1]}
+                onClick={() => go(x[3] as View)}
+              >
+                <i>{x[0].slice(0, 1)}</i>
+                <span>
+                  <small>
+                    {x[0]} · {x[2]}
+                  </small>
+                  <b>{x[1]}</b>
+                  <p>
+                    {x[0] === "Geri bildirim"
+                      ? "Rubrikte dokümantasyon bölümünü güncelle ve tekrar gönder."
+                      : "Detayı görüntülemek için aç."}
+                  </p>
+                </span>
+                <em>→</em>
+              </button>
+            ))}
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function Classroom({ note }: any) {
+  const [tab, setTab] = useState("Öğrenciler");
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>DERS, ŞUBE & ÖĞRENCİ YÖNETİMİ</small>
+          <h1>Sınıf Yönetimi</h1>
+          <p>
+            Öğrencileri, grupları, görev atamalarını ve bireysel destek
+            planlarını yönetin.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Excel öğrenci aktarım sihirbazı açıldı.")}
+        >
+          Excel’den öğrenci aktar
+        </button>
+      </div>
+      <div className="classHeader">
+        <div>
+          <small>2026 BAHAR</small>
+          <h2>BLP 101 · Algoritma ve Programlama</h2>
+          <p>Bilgisayar Programcılığı · 1. Sınıf · A Şubesi</p>
+        </div>
+        <div>
+          <span>
+            <b>42</b> öğrenci
+          </span>
+          <span>
+            <b>%81</b> aktiflik
+          </span>
+          <span>
+            <b>7</b> riskli
+          </span>
+        </div>
+      </div>
+      <div className="classTabs">
+        {["Öğrenciler", "Gruplar", "Atamalar", "Destek planları"].map((x) => (
+          <button
+            className={tab === x ? "on" : ""}
+            onClick={() => setTab(x)}
+            key={x}
+          >
+            {x}
+          </button>
+        ))}
+      </div>
+      {tab === "Öğrenciler" ? (
+        <section className="studentTable">
+          <header>
+            <span>Öğrenci</span>
+            <span>İlerleme</span>
+            <span>Ustalık</span>
+            <span>Son etkinlik</span>
+            <span>Durum</span>
+            <span />
+          </header>
+          {[
+            ["AY", "Ayşe Yılmaz", 72, 78, "Bugün", "Aktif"],
+            ["CD", "Can Demir", 41, 55, "4 gün önce", "Riskli"],
+            ["EA", "Ece Aydın", 84, 86, "Bugün", "Aktif"],
+            ["MK", "Mehmet Kaya", 63, 71, "Dün", "İzlenmeli"],
+          ].map((x) => (
+            <article key={String(x[1])}>
+              <div>
+                <i>{x[0]}</i>
+                <span>
+                  <b>{x[1]}</b>
+                  <small>202601{Math.floor(Number(x[2]) * 13)}</small>
+                </span>
+              </div>
+              <div>
+                <i style={{ width: `${x[2]}%` }} />
+                <small>%{x[2]}</small>
+              </div>
+              <strong>%{x[3]}</strong>
+              <time>{x[4]}</time>
+              <em
+                className={
+                  x[5] === "Riskli"
+                    ? "risk"
+                    : x[5] === "İzlenmeli"
+                      ? "watch"
+                      : ""
+                }
+              >
+                {x[5]}
+              </em>
+              <button onClick={() => note(`${x[1]} öğrenci profili açıldı.`)}>
+                Profil →
+              </button>
+            </article>
+          ))}
+        </section>
+      ) : (
+        <div className="tabPlaceholder">
+          <i>{tab === "Gruplar" ? "♟" : tab === "Atamalar" ? "▣" : "✦"}</i>
+          <h2>{tab}</h2>
+          <p>
+            {tab === "Gruplar"
+              ? "Proje ve destek gruplarını oluştur, öğrencileri sürükleyerek gruplara dağıt."
+              : tab === "Atamalar"
+                ? "Görevleri tüm sınıfa, gruba veya seçili öğrencilere ata."
+                : "Riskli öğrenciler için otomatik ve bireysel destek planları oluştur."}
+          </p>
+          <button onClick={() => note(`${tab} için yeni kayıt oluşturuldu.`)}>
+            ＋ Yeni oluştur
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ReportCenter({ note }: any) {
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>KURUMSAL KARAR & KANIT MERKEZİ</small>
+          <h1>Rapor Merkezi</h1>
+          <p>
+            Ders performansını, kazanımları ve MEDEK kanıtlarını yönetim için
+            hazır raporlara dönüştür.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() =>
+            note("2026 Bahar yönetim özeti PDF olarak hazırlandı.")
+          }
+        >
+          Yönetim özeti oluştur ↓
+        </button>
+      </div>
+      <div className="reportFilters">
+        <select>
+          <option>2026 Bahar</option>
+        </select>
+        <select>
+          <option>BLP 101 · Algoritma</option>
+          <option>Tüm dersler</option>
+        </select>
+        <select>
+          <option>A Şubesi</option>
+          <option>Tüm şubeler</option>
+        </select>
+        <button onClick={() => note("Rapor filtreleri uygulandı.")}>
+          Uygula
+        </button>
+      </div>
+      <div className="reportKpis">
+        {[
+          ["%81", "Aktif öğrenci", "+6 puan"],
+          ["%73", "ÖÇ karşılama", "Hedef %70"],
+          ["%76", "Görev tamamlama", "-3 puan"],
+          ["7", "Riskli öğrenci", "Müdahale gerekli"],
+        ].map((x) => (
+          <article key={x[1]}>
+            <small>{x[1]}</small>
+            <b>{x[0]}</b>
+            <em>{x[2]}</em>
+          </article>
+        ))}
+      </div>
+      <div className="reportGrid">
+        <section className="outcomeReport">
+          <header>
+            <div>
+              <small>KAZANIM PERFORMANSI</small>
+              <h2>ÖÇ başarı dağılımı</h2>
+            </div>
+            <button
+              onClick={() => note("Kazanım raporu Excel olarak hazırlandı.")}
+            >
+              Excel ↓
+            </button>
+          </header>
+          {[
+            ["ÖÇ1 · Algoritmik düşünme", 86],
+            ["ÖÇ2 · Programlama yapıları", 78],
+            ["ÖÇ3 · Veri yönetimi", 64],
+            ["ÖÇ4 · Test ve hata ayıklama", 58],
+            ["ÖÇ5 · Dokümantasyon", 72],
+          ].map((x) => (
+            <article key={String(x[0])}>
+              <b>{x[0]}</b>
+              <div>
+                <i style={{ width: `${x[1]}%` }} />
+              </div>
+              <strong>%{x[1]}</strong>
+            </article>
+          ))}
+        </section>
+        <aside className="evidencePack">
+          <small>MEDEK KANIT PAKETİ</small>
+          <h2>2026 Bahar hazır</h2>
+          <p>
+            Ders izlencesi, ÖÇ–PÇ matrisi, ölçme sonuçları ve iyileştirme
+            kanıtları tek pakette.
+          </p>
+          {[
+            ["Ders izlencesi", "Hazır"],
+            ["ÖÇ–PÇ matrisi", "Hazır"],
+            ["Soru analizleri", "Hazır"],
+            ["İyileştirme planı", "1 eksik"],
+          ].map((x) => (
+            <article key={x[0]}>
+              <span>{x[0]}</span>
+              <b>{x[1]}</b>
+            </article>
+          ))}
+          <button onClick={() => note("MEDEK kanıt paketi oluşturuldu.")}>
+            Paketi oluştur →
+          </button>
+        </aside>
+      </div>
+      <section className="reportCards">
+        {[
+          [
+            "Soru Kalite Analizi",
+            "Ayırt edicilik, başarı ve güçlük değerleri",
+            "▤",
+          ],
+          ["Öğrenci Risk Raporu", "Devam, görev ve ustalık sinyalleri", "!"],
+          [
+            "Proje & Rubrik Raporu",
+            "Proje aşamaları ve yetkinlik kanıtları",
+            "◆",
+          ],
+        ].map((x) => (
+          <button key={x[0]} onClick={() => note(`${x[0]} açıldı.`)}>
+            <i>{x[2]}</i>
+            <span>
+              <b>{x[0]}</b>
+              <small>{x[1]}</small>
+            </span>
+            <em>→</em>
+          </button>
+        ))}
+      </section>
+    </section>
+  );
+}
+
 function QuestionBank({ note }: any) {
   const [type, setType] = useState("Tümü");
   const [selected, setSelected] = useState<string[]>([]);
