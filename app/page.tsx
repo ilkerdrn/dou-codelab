@@ -12,6 +12,11 @@ type View =
   | "projects"
   | "mentor"
   | "analytics"
+  | "passport"
+  | "curriculum"
+  | "arena"
+  | "reviews"
+  | "career"
   | "news"
   | "studio";
 const courses = [
@@ -292,14 +297,18 @@ export default function App() {
     ["calendar", "□", "Takvim"],
     ["lab", "</>", "Kod laboratuvarı"],
     ["mentor", "✦", "AI Kod Koçu"],
-    ["progress", "↗", "Gelişimim"],
+    ["passport", "◈", "Skill Passport"],
+    ["arena", "⚑", "CodeLab Arena"],
+    ["career", "◎", "Kariyer eşleşmesi"],
     ["news", "◉", "Duyurular"],
   ];
   const teacherNav: any = [
     ["studio", "＋", "İçerik stüdyosu"],
     ["analytics", "▥", "Analitik merkez"],
+    ["curriculum", "⌗", "ÖÇ–PÇ haritası"],
     ["tasks", "▣", "Görev yönetimi"],
     ["projects", "◆", "Proje inceleme"],
+    ["reviews", "◇", "Kod inceleme"],
     ["paths", "⌘", "Ders patikaları"],
     ["calendar", "□", "Ders takvimi"],
     ["progress", "↗", "Yayınlananlar"],
@@ -410,6 +419,11 @@ export default function App() {
         {view === "projects" && <Projects role={role} note={note} />}{" "}
         {view === "mentor" && <Mentor code={code} note={note} />}{" "}
         {view === "analytics" && <Analytics note={note} />}{" "}
+        {view === "passport" && <SkillPassport note={note} go={setView} />}{" "}
+        {view === "curriculum" && <CurriculumMap note={note} />}{" "}
+        {view === "arena" && <Arena note={note} go={setView} />}{" "}
+        {view === "reviews" && <ReviewQueue note={note} />}{" "}
+        {view === "career" && <CareerMatch note={note} go={setView} />}{" "}
         {view === "news" && <News note={note} />}{" "}
         {view === "studio" && (
           <Studio
@@ -1623,6 +1637,514 @@ function Studio({
     </section>
   );
 }
+function SkillPassport({ note, go }: any) {
+  const skills = [
+    ["Python", 84, "Doğrulandı"],
+    ["SQL ve veri", 76, "Doğrulandı"],
+    ["Git & GitHub", 68, "Gelişiyor"],
+    ["REST API", 61, "Gelişiyor"],
+    ["Hata ayıklama", 79, "Doğrulandı"],
+  ];
+  return (
+    <section className="passportPage">
+      <div className="pageTitle">
+        <div>
+          <small>DOĞRULANMIŞ BECERİ PROFİLİ</small>
+          <h1>DOU Skill Passport</h1>
+          <p>
+            Ders notundan fazlası: uygulama, proje ve akademisyen onayıyla
+            oluşan canlı beceri kimliğin.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Paylaşılabilir profil bağlantısı kopyalandı.")}
+        >
+          Profili paylaş ↗
+        </button>
+      </div>
+      <div className="passportHero">
+        <div className="identity">
+          <i>AY</i>
+          <div>
+            <small>DOĞUŞ ÜNİVERSİTESİ · MYO</small>
+            <h2>Ayşe Yılmaz</h2>
+            <p>Bilgisayar Programcılığı · Backend Developer Adayı</p>
+            <span>◉ Akademisyen tarafından doğrulandı</span>
+          </div>
+        </div>
+        <div className="readiness">
+          <small>ROL UYGUNLUĞU</small>
+          <strong>%78</strong>
+          <span>Junior Backend Stajı</span>
+          <div>
+            <i style={{ width: "78%" }} />
+          </div>
+        </div>
+        <button
+          className="qr"
+          onClick={() => note("Doğrulama QR kodu büyütüldü.")}
+          aria-label="Doğrulama QR kodu"
+        >
+          ▦<small>DOĞRULA</small>
+        </button>
+      </div>
+      <div className="passportStats">
+        {[
+          ["2.840", "Toplam XP"],
+          ["137", "Uygulama"],
+          ["4", "Doğrulanmış proje"],
+          ["12", "Hafta seri"],
+        ].map((x) => (
+          <article key={x[1]}>
+            <b>{x[0]}</b>
+            <span>{x[1]}</span>
+          </article>
+        ))}
+      </div>
+      <div className="passportGrid">
+        <section className="skillEvidence">
+          <header>
+            <div>
+              <small>BECERİ KANITLARI</small>
+              <h2>Teknik yetkinlikler</h2>
+            </div>
+            <button onClick={() => go("assessment")}>Yeniden ölç →</button>
+          </header>
+          {skills.map((s) => (
+            <article key={String(s[0])}>
+              <div>
+                <b>{s[0]}</b>
+                <span>{s[2]}</span>
+              </div>
+              <div className="skillTrack">
+                <i style={{ width: `${s[1]}%` }} />
+              </div>
+              <strong>%{s[1]}</strong>
+            </article>
+          ))}
+        </section>
+        <aside className="verifiedWork">
+          <header>
+            <small>SEÇİLİ KANITLAR</small>
+            <h2>Doğrulanmış çalışmalar</h2>
+          </header>
+          {[
+            ["REST API Projesi", "92 / 100", "İD"],
+            ["SQL Veri Analizi", "88 / 100", "SA"],
+            ["Python Otomasyon", "90 / 100", "İD"],
+          ].map((x) => (
+            <button key={x[0]} onClick={() => go("projects")}>
+              <i>◆</i>
+              <span>
+                <b>{x[0]}</b>
+                <small>
+                  Akademisyen: {x[2]} · {x[1]}
+                </small>
+              </span>
+              <em>→</em>
+            </button>
+          ))}
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function CurriculumMap({ note }: any) {
+  const rows = [
+    ["ÖÇ1", "Algoritmik problem çözme", "PÇ1 · PÇ3", 86, "Güçlü"],
+    [
+      "ÖÇ2",
+      "Temel programlama yapılarını uygulama",
+      "PÇ2 · PÇ5",
+      78,
+      "Beklenen",
+    ],
+    ["ÖÇ3", "Veri tabanı sorguları geliştirme", "PÇ4 · PÇ6", 64, "İzlenmeli"],
+    ["ÖÇ4", "Hata ayıklama ve test", "PÇ3 · PÇ7", 58, "Müdahale"],
+    ["ÖÇ5", "Takım çalışması ve dokümantasyon", "PÇ8 · PÇ9", 72, "Beklenen"],
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>MEDEK UYUMLU AKADEMİK MOTOR</small>
+          <h1>ÖÇ–PÇ Kazanım Haritası</h1>
+          <p>
+            Ders, etkinlik ve ölçme kanıtlarını program çıktılarıyla aynı
+            ekranda ilişkilendir.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("MEDEK kanıt raporu PDF için hazırlandı.")}
+        >
+          Rapor oluştur ↓
+        </button>
+      </div>
+      <div className="curriculumSummary">
+        {[
+          ["7", "Öğrenme çıktısı"],
+          ["9", "Program çıktısı"],
+          ["42", "Kanıt noktası"],
+          ["%73", "Genel karşılama"],
+        ].map((x) => (
+          <article key={x[1]}>
+            <b>{x[0]}</b>
+            <span>{x[1]}</span>
+          </article>
+        ))}
+      </div>
+      <section className="curriculumTable">
+        <header>
+          <div>
+            <small>AKTİF DERS</small>
+            <h2>BLP 101 · Algoritma ve Programlama</h2>
+          </div>
+          <select aria-label="Ders seç">
+            <option>BLP 101 · Algoritma ve Programlama</option>
+            <option>BLP 105 · Veritabanı Yönetimi</option>
+            <option>BLP 203 · Nesne Tabanlı Programlama</option>
+          </select>
+        </header>
+        <div className="ctHead">
+          <span>Çıktı</span>
+          <span>Kazanım</span>
+          <span>PÇ ilişkisi</span>
+          <span>Başarı</span>
+          <span>Durum</span>
+          <span />
+        </div>
+        {rows.map((r) => (
+          <article key={String(r[0])}>
+            <b>{r[0]}</b>
+            <span>{r[1]}</span>
+            <em>{r[2]}</em>
+            <div>
+              <i style={{ width: `${r[3]}%` }} />
+              <small>%{r[3]}</small>
+            </div>
+            <strong
+              className={
+                Number(r[3]) < 60 ? "danger" : Number(r[3]) < 70 ? "watch" : ""
+              }
+            >
+              {r[4]}
+            </strong>
+            <button onClick={() => note(`${r[0]} için 8 ölçme kanıtı açıldı.`)}>
+              Kanıtlar →
+            </button>
+          </article>
+        ))}
+      </section>
+      <div className="intervention">
+        <div>
+          <i>!</i>
+          <span>
+            <b>Akademik müdahale önerisi</b>
+            <p>
+              ÖÇ4 başarı oranı hedefin altında. “Hata Ayıklama Laboratuvarı”nı
+              18 öğrenciye destek görevi olarak atayabilirsin.
+            </p>
+          </span>
+        </div>
+        <button onClick={() => note("Destek görevi 18 öğrenciye atandı.")}>
+          Destek görevi ata
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function Arena({ note, go }: any) {
+  const [joined, setJoined] = useState(false);
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>HAFTALIK UYGULAMA LİGİ</small>
+          <h1>CodeLab Arena</h1>
+          <p>
+            Hızdan önce doğruluk, kod kalitesi ve farklı çözüm yaklaşımı
+            puanlanır.
+          </p>
+        </div>
+        <aside>
+          🏆
+          <span>
+            <b>Bronz Lig · #5</b>
+            <small>Üst lige 140 XP</small>
+          </span>
+        </aside>
+      </div>
+      <div className="bossCard">
+        <div>
+          <small>HAFTANIN BOSS CHALLENGE’I · 320 XP</small>
+          <h2>Akıllı Kampüs Enerji Analizi</h2>
+          <p>
+            Saatlik tüketim verisini işle, anormal değerleri bul ve en verimli
+            zaman aralığını hesapla.
+          </p>
+          <div className="bossMeta">
+            <span>Python</span>
+            <span>Veri işleme</span>
+            <span>45 dakika</span>
+            <span>3 gizli test</span>
+          </div>
+          <button
+            onClick={() => {
+              setJoined(true);
+              note("Arena çalışma alanın hazırlandı.");
+            }}
+          >
+            {joined ? "Meydan okumaya devam et →" : "Meydan okumayı kabul et →"}
+          </button>
+        </div>
+        <pre>
+          <b>def</b> analiz_et(veri):{"\n"} <i># örüntüyü keşfet</i>
+          {"\n"} return sonuç
+        </pre>
+      </div>
+      <div className="arenaGrid">
+        <section className="league">
+          <header>
+            <div>
+              <small>MYO HAFTALIK LİGİ</small>
+              <h2>İlk 5</h2>
+            </div>
+            <button onClick={() => note("Tam sıralama açıldı.")}>Tümü →</button>
+          </header>
+          {[
+            ["1", "Mehmet Kaya", "3.840", "MK"],
+            ["2", "Zeynep Akın", "3.620", "ZA"],
+            ["3", "Can Demir", "3.410", "CD"],
+            ["4", "Ece Aydın", "3.080", "EA"],
+            ["5", "Ayşe Yılmaz", "2.840", "AY"],
+          ].map((x) => (
+            <article className={x[0] === "5" ? "me" : ""} key={x[0]}>
+              <strong>{x[0]}</strong>
+              <i>{x[3]}</i>
+              <span>
+                <b>{x[1]}</b>
+                <small>Problem Çözücü</small>
+              </span>
+              <em>{x[2]} XP</em>
+            </article>
+          ))}
+        </section>
+        <aside className="teamLeague">
+          <small>TAKIM MÜCADELESİ</small>
+          <h2>API Avcıları</h2>
+          <p>Bu hafta takımın 2. sırada. Ortak hedefe 4 görev kaldı.</p>
+          <div>
+            <i style={{ width: "72%" }} />
+          </div>
+          <span>
+            <b>%72</b> · 18 / 25 görev
+          </span>
+          <button onClick={() => go("lab")}>Takıma katkı yap →</button>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function ReviewQueue({ note }: any) {
+  const [active, setActive] = useState(0);
+  const submissions = [
+    "Ayşe Yılmaz · REST API",
+    "Can Demir · SQL Raporlama",
+    "Ece Aydın · Python Otomasyon",
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>İNSAN GERİ BİLDİRİMİ</small>
+          <h1>Kod İnceleme Kuyruğu</h1>
+          <p>
+            Otomatik testten geçen teslimleri kod kalitesi, yaklaşım ve
+            açıklanabilirlik açısından değerlendir.
+          </p>
+        </div>
+        <strong>
+          7<small>inceleme bekliyor</small>
+        </strong>
+      </div>
+      <div className="reviewWorkspace">
+        <aside>
+          {submissions.map((x, i) => (
+            <button
+              className={active === i ? "on" : ""}
+              onClick={() => setActive(i)}
+              key={x}
+            >
+              <i>{i + 1}</i>
+              <span>
+                <b>{x.split(" · ")[0]}</b>
+                <small>{x.split(" · ")[1]} · Az önce</small>
+              </span>
+            </button>
+          ))}
+        </aside>
+        <article>
+          <header>
+            <div>
+              <small>TESLİM #CL-2048</small>
+              <h2>{submissions[active]}</h2>
+            </div>
+            <span>✓ 8/8 test geçti</span>
+          </header>
+          <pre>
+            <code>
+              <b>def</b> filtrele_kayitlar(kayitlar):{"\n"} sonuc = []{"\n"}{" "}
+              <b>for</b> kayit <b>in</b> kayitlar:{"\n"} <b>if</b> kayit[
+              <i>"aktif"</i>]:{"\n"} sonuc.append(kayit){"\n"} <b>return</b>{" "}
+              sonuc
+            </code>
+          </pre>
+          <div className="rubric">
+            {[
+              ["İşlevsellik", "25 / 25"],
+              ["Kod kalitesi", "20 / 25"],
+              ["Test yaklaşımı", "18 / 25"],
+              ["Dokümantasyon", "21 / 25"],
+            ].map((x) => (
+              <label key={x[0]}>
+                <span>
+                  <b>{x[0]}</b>
+                  <em>{x[1]}</em>
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="25"
+                  defaultValue={Number(x[1].split(" ")[0])}
+                />
+              </label>
+            ))}
+          </div>
+          <textarea placeholder="Kod satırına veya teslimin geneline akademik geri bildirim yaz..." />
+          <footer>
+            <button
+              onClick={() => note("Teslim revizyon için öğrenciye gönderildi.")}
+            >
+              Revizyon iste
+            </button>
+            <button
+              onClick={() =>
+                note("Proje doğrulandı ve Skill Passport’a işlendi.")
+              }
+            >
+              Doğrula · 84 puan
+            </button>
+          </footer>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function CareerMatch({ note, go }: any) {
+  const roles = [
+    [
+      "Junior Backend Developer",
+      78,
+      ["Python", "SQL", "REST API"],
+      "Git %68 → %75",
+    ],
+    [
+      "Veri Analizi Stajyeri",
+      72,
+      ["Python", "Pandas", "SQL"],
+      "Pandas projesi",
+    ],
+    ["QA Automation Intern", 66, ["Python", "Test", "Git"], "Test otomasyonu"],
+  ];
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>BECERİDEN KARİYERE</small>
+          <h1>Kariyer Eşleşmesi</h1>
+          <p>
+            Skill Passport verilerin, proje kanıtların ve hedeflerinle uygun
+            rolleri keşfet.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Kariyer hedefi düzenleme ekranı açıldı.")}
+        >
+          Hedefimi düzenle
+        </button>
+      </div>
+      <div className="careerHero">
+        <div>
+          <small>HEDEF ROL</small>
+          <h2>Backend Developer</h2>
+          <p>
+            Mevcut beceri profilinle başlangıç seviyesi rollere{" "}
+            <b>%78 hazırsın.</b>
+          </p>
+          <div>
+            <i style={{ width: "78%" }} />
+          </div>
+        </div>
+        <aside>
+          <small>BU HAFTAKİ EN ETKİLİ ADIM</small>
+          <b>REST API projesini tamamla</b>
+          <p>Hazırlık skoruna yaklaşık +7 puan kazandırır.</p>
+          <button onClick={() => go("projects")}>Projeye git →</button>
+        </aside>
+      </div>
+      <div className="roleGrid">
+        {roles.map((r, i) => (
+          <article key={String(r[0])}>
+            <header>
+              <i>{i + 1}</i>
+              <strong>%{r[1]} eşleşme</strong>
+            </header>
+            <h2>{r[0]}</h2>
+            <div className="roleTags">
+              {(r[2] as string[]).map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </div>
+            <p>
+              <b>Sonraki gelişim adımı:</b> {r[3]}
+            </p>
+            <footer>
+              <button onClick={() => note(`${r[0]} rol haritası açıldı.`)}>
+                Rol haritası
+              </button>
+              <button
+                onClick={() => note("Skill Passport bu role göre güncellendi.")}
+              >
+                Hedefle
+              </button>
+            </footer>
+          </article>
+        ))}
+      </div>
+      <section className="careerEvidence">
+        <div>
+          <small>İŞVERENE GÖSTERİLEBİLİR KANIT</small>
+          <h2>CV cümlesi değil, çalışan proje.</h2>
+          <p>
+            Her eşleşme; test sonucu, akademisyen değerlendirmesi ve
+            doğrulanabilir proje bağlantısıyla desteklenir.
+          </p>
+        </div>
+        <button onClick={() => go("passport")}>
+          Skill Passport’u görüntüle →
+        </button>
+      </section>
+    </section>
+  );
+}
+
 function Toast({ text }: { text: string }) {
   return <div className="toast">{text}</div>;
 }
