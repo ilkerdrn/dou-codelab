@@ -17,6 +17,11 @@ Giriş ekranındaki öğrenci ve öğretim elemanı demo düğmeleri ilgili pane
 parola gerektirmeden açar. Gerçek kurumsal kullanım için kimlik doğrulama ve
 kalıcı veri katmanı ayrıca yapılandırılmalıdır.
 
+## Okul sunucusuna geçiş
+
+Üretim altyapısı, gerekli üniversite erişimleri ve güvenlik kontrol listesi için
+[`deployment/school-server`](deployment/school-server/README.md) klasörüne bakın.
+
 ## Yerel geliştirme
 
 ```bash
