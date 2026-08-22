@@ -196,6 +196,118 @@ const lessonContent: Record<
     practice: "Bir web isteğinin istemciden sunucuya giderken geçtiği katmanları sırala.",
   },
 };
+const labConfigs: Record<
+  string,
+  {
+    file: string;
+    title: string;
+    lead: string;
+    objective: string;
+    example: string;
+    starter: string;
+    solution: string;
+    hint: string;
+    checks: { label: string; test: (code: string) => boolean }[];
+    success: string;
+  }
+> = {
+  "BLP 101": {
+    file: "main.py",
+    title: "Döngülerle veri filtreleme",
+    lead: "Bir listedeki değerleri sırayla incele ve yalnızca çift sayıları ekrana yazdır.",
+    objective: "Koşulu for döngüsünün içinde kur ve üç otomatik testi geçir.",
+    example: "for sayi in sayilar:\n    print(sayi)",
+    starter: "sayilar = [4, 7, 12, 19, 24]\n\nfor sayi in sayilar:\n    # çift sayı koşulunu yaz\n    pass",
+    solution: "sayilar = [4, 7, 12, 19, 24]\n\nfor sayi in sayilar:\n    if sayi % 2 == 0:\n        print(sayi)",
+    hint: "Mod alma operatörü % ile sayının 2'ye bölümünden kalanı kontrol et.",
+    checks: [
+      { label: "Döngü kuruldu", test: (value) => /for\s+sayi\s+in\s+sayilar/.test(value) },
+      { label: "Çift sayı koşulu doğru", test: (value) => /sayi\s*%\s*2\s*==\s*0/.test(value) },
+      { label: "Sonuç yazdırıldı", test: (value) => /print\s*\(\s*sayi\s*\)/.test(value) },
+    ],
+    success: "4\n12\n24",
+  },
+  "BLP 105": {
+    file: "query.sql",
+    title: "Satış verisini gruplama",
+    lead: "Satışları kategoriye göre grupla, toplam ciroyu hesapla ve sonucu büyükten küçüğe sırala.",
+    objective: "GROUP BY, SUM ve ORDER BY ifadelerini aynı sorguda doğru kullan.",
+    example: "SELECT kategori, SUM(tutar) AS toplam\nFROM satislar\nGROUP BY kategori;",
+    starter: "SELECT kategori\nFROM satislar\n-- gruplama ve toplam işlemini tamamla",
+    solution: "SELECT kategori, SUM(tutar) AS toplam_ciro\nFROM satislar\nGROUP BY kategori\nORDER BY toplam_ciro DESC;",
+    hint: "Önce SUM(tutar), ardından GROUP BY kategori ve son olarak ORDER BY kullan.",
+    checks: [
+      { label: "Toplam hesaplandı", test: (value) => /SUM\s*\(\s*tutar\s*\)/i.test(value) },
+      { label: "Kategoriye göre gruplandı", test: (value) => /GROUP\s+BY\s+kategori/i.test(value) },
+      { label: "Büyükten küçüğe sıralandı", test: (value) => /ORDER\s+BY[\s\S]*DESC/i.test(value) },
+    ],
+    success: "Yazılım | 48.500\nDonanım | 31.200\nAğ | 18.750",
+  },
+  "BLP 203": {
+    file: "Kitap.cs",
+    title: "Kitap sınıfı oluşturma",
+    lead: "Ad ve yazar bilgilerini tutan, bilgileri ekrana yazdıran bir C# sınıfı geliştir.",
+    objective: "Sınıf, özellik ve metot yapılarını birlikte kullan.",
+    example: "class Kitap {\n    public string Ad { get; set; }\n}",
+    starter: "class Kitap\n{\n    // Ad ve Yazar özelliklerini ekle\n    // BilgiYazdir metodunu oluştur\n}",
+    solution: "class Kitap\n{\n    public string Ad { get; set; }\n    public string Yazar { get; set; }\n\n    public void BilgiYazdir()\n    {\n        Console.WriteLine($\"{Ad} - {Yazar}\");\n    }\n}",
+    hint: "İki public string özellik ve geriye değer döndürmeyen public void metot kullan.",
+    checks: [
+      { label: "Kitap sınıfı tanımlandı", test: (value) => /class\s+Kitap/.test(value) },
+      { label: "Ad ve Yazar özellikleri var", test: (value) => /string\s+Ad/.test(value) && /string\s+Yazar/.test(value) },
+      { label: "BilgiYazdir metodu var", test: (value) => /void\s+BilgiYazdir\s*\(/.test(value) },
+    ],
+    success: "Simyacı - Paulo Coelho",
+  },
+  "BLP 108": {
+    file: "style.css",
+    title: "Duyarlı kart yerleşimi",
+    lead: "Kartları masaüstünde üç, mobilde tek sütun gösterecek CSS Grid yapısını kur.",
+    objective: "Grid sütunları, boşluk ve mobil medya sorgusunu tamamla.",
+    example: ".kartlar {\n  display: grid;\n  gap: 16px;\n}",
+    starter: ".kartlar {\n  /* grid yerleşimini tamamla */\n}\n\n/* 700px altında tek sütun */",
+    solution: ".kartlar {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}\n\n@media (max-width: 700px) {\n  .kartlar { grid-template-columns: 1fr; }\n}",
+    hint: "display: grid, repeat(3, 1fr) ve max-width medya sorgusunu birlikte kullan.",
+    checks: [
+      { label: "Grid etkinleştirildi", test: (value) => /display\s*:\s*grid/.test(value) },
+      { label: "Üç sütun tanımlandı", test: (value) => /repeat\s*\(\s*3\s*,\s*1fr\s*\)/.test(value) },
+      { label: "Mobil görünüm eklendi", test: (value) => /@media[\s\S]*max-width[\s\S]*grid-template-columns\s*:\s*1fr/.test(value) },
+    ],
+    success: "✓ Masaüstü: 3 sütun\n✓ Mobil: 1 sütun\n✓ Taşma yok",
+  },
+  "BLP 276": {
+    file: "analysis.py",
+    title: "Pandas ile not analizi",
+    lead: "CSV verisini oku, eksik değerleri temizle ve ders ortalamalarını hesapla.",
+    objective: "read_csv, fillna ve groupby işlemlerini doğru sırada uygula.",
+    example: "df = pd.read_csv('notlar.csv')\nprint(df.head())",
+    starter: "import pandas as pd\n\ndf = pd.read_csv('notlar.csv')\n# eksik notları 0 ile doldur\n# ders bazında ortalamayı yazdır",
+    solution: "import pandas as pd\n\ndf = pd.read_csv('notlar.csv')\ndf['not'] = df['not'].fillna(0)\nortalama = df.groupby('ders')['not'].mean()\nprint(ortalama)",
+    hint: "not sütununda fillna(0), ardından groupby('ders') ve mean() kullan.",
+    checks: [
+      { label: "CSV okundu", test: (value) => /pd\.read_csv\s*\(/.test(value) },
+      { label: "Eksik değerler temizlendi", test: (value) => /fillna\s*\(\s*0\s*\)/.test(value) },
+      { label: "Ders ortalaması hesaplandı", test: (value) => /groupby\s*\(\s*['\"]ders['\"]\s*\)[\s\S]*mean\s*\(/.test(value) },
+    ],
+    success: "Algoritma 78.4\nVeritabanı 82.1\nWeb Tasarım 74.8",
+  },
+  "BLT 103": {
+    file: "network-flow.txt",
+    title: "Web isteğinin ağ yolculuğu",
+    lead: "Bir HTTPS isteğinin istemciden sunucuya giderken kullandığı protokolleri doğru sırala.",
+    objective: "DNS, TCP, TLS, IP ve HTTPS rollerini doğru akışta göster.",
+    example: "İstemci → DNS → TCP → TLS → HTTPS → Sunucu",
+    starter: "İstemci → [DNS] → [???] → [TLS] → [???] → Sunucu",
+    solution: "İstemci → DNS → TCP → TLS → HTTPS → Sunucu\nTaşıma: TCP\nAğ: IP\nUygulama: HTTPS (443)",
+    hint: "DNS alan adını çözer; TCP bağlantıyı kurar; TLS şifreler; HTTPS isteği taşır.",
+    checks: [
+      { label: "TCP bağlantısı gösterildi", test: (value) => /TCP/i.test(value) },
+      { label: "HTTPS katmanı gösterildi", test: (value) => /HTTPS/i.test(value) },
+      { label: "IP ağ katmanı belirtildi", test: (value) => /\bIP\b/i.test(value) },
+    ],
+    success: "DNS ✓\nTCP bağlantısı ✓\nTLS güvenliği ✓\nHTTPS/443 ✓\nIP yönlendirme ✓",
+  },
+};
 function Mark() {
   return (
     <span className="mark">
@@ -214,7 +326,7 @@ export default function App() {
     [toast, setToast] = useState(""),
     [selected, setSelected] = useState(courses[0]);
   const [code, setCode] = useState(
-      "sayilar = [4, 7, 12, 19, 24]\n\nfor sayi in sayilar:\n    # koşulu buraya yaz\n    pass",
+      labConfigs["BLP 101"].starter,
     ),
     [output, setOutput] = useState("Hazır · Kodunu çalıştırabilirsin.");
   const [title, setTitle] = useState(""),
@@ -261,18 +373,32 @@ export default function App() {
   }
   function open(c = selected) {
     setSelected(c);
+    const saved = window.localStorage.getItem(`dou-codelab:lab:${c.code}`);
+    setCode(saved ?? labConfigs[c.code]?.starter ?? labConfigs["BLP 101"].starter);
+    setOutput("Hazır · Kodunu çalıştırabilirsin.");
     setView("lesson");
   }
   function run() {
-    const ok =
-      /if\s+sayi\s*%\s*2\s*==\s*0/.test(code) &&
-      /print\s*\(\s*sayi\s*\)/.test(code);
+    const config = labConfigs[selected.code] ?? labConfigs["BLP 101"];
+    const results = config.checks.map((check) => ({
+      label: check.label,
+      passed: check.test(code),
+    }));
+    const passed = results.filter((result) => result.passed).length;
+    const report = results
+      .map((result) => `${result.passed ? "✓" : "✕"} ${result.label}`)
+      .join("\n");
+    if (passed === results.length) {
+      setOutput(
+        `${config.success}\n\n${report}\n\n✓ ${passed}/${results.length} test geçti · +80 XP`,
+      );
+      window.localStorage.setItem(`dou-codelab:lab:${selected.code}`, code);
+      note("Görev tamamlandı. 80 XP kazandın!");
+      return;
+    }
     setOutput(
-      ok
-        ? "4\n12\n24\n\n✓ 3/3 test geçti · +80 XP"
-        : "✕ Test başarısız\nİpucu: sayi % 2 == 0 koşulunu kullan.",
+      `${report}\n\n✕ ${passed}/${results.length} test geçti\nİpucu: ${config.hint}`,
     );
-    if (ok) note("Görev tamamlandı. 80 XP kazandın!");
   }
   if (!logged)
     return (
@@ -540,6 +666,7 @@ export default function App() {
             output={output}
             run={run}
             note={note}
+            go={setView}
           />
         )}{" "}
         {view === "progress" && (
@@ -1224,92 +1351,116 @@ function Calendar({ note }: any) {
     </section>
   );
 }
-function Lab({ course, code, setCode, output, run, note }: any) {
+function Lab({ course, code, setCode, output, run, note, go }: any) {
+  const config = labConfigs[course.code] ?? labConfigs["BLP 101"];
+  const track = lessonTracks[course.code] ?? topics.slice(0, 5);
+  const [showTests, setShowTests] = useState(true);
+  function reset() {
+    setCode(config.starter);
+    window.localStorage.removeItem(`dou-codelab:lab:${course.code}`);
+    note("Başlangıç kodu geri yüklendi.");
+  }
   return (
     <section className="lab">
       <aside className="topics">
         <small>{course.code}</small>
         <h2>{course.name}</h2>
-        {topics.map((t, i) => (
+        {track.map((topic, index) => (
           <button
-            key={t}
-            className={i === 4 ? "on" : i < 4 ? "done" : ""}
-            onClick={() => note(`${t} konusu açıldı.`)}
+            key={topic}
+            className={topic === course.topic ? "on" : index < 3 ? "done" : ""}
+            onClick={() =>
+              topic === course.topic
+                ? note(`${topic} uygulamasındasın.`)
+                : note("Bu uygulama ders akışından sırayla açılır.")
+            }
           >
-            <i>{i < 4 ? "✓" : i + 1}</i>
-            {t}
+            <i>{index < 3 ? "✓" : index + 1}</i>
+            {topic}
           </button>
         ))}
+        <button className="backLesson" onClick={() => go("lesson")}>
+          ← Konu anlatımına dön
+        </button>
       </aside>
       <article className="lesson">
-        <div className="crumb">{course.code} / Uygulama 05</div>
-        <h1>Döngülerle veri filtreleme</h1>
-        <p className="lead">
-          Bir koleksiyondaki değerleri sırayla incelemek için <code>for</code>{" "}
-          döngüsü kullanılır.
-        </p>
+        <div className="crumb">{course.code} / Etkileşimli uygulama</div>
+        <h1>{config.title}</h1>
+        <p className="lead">{config.lead}</p>
         <aside>
-          <b>Hedef</b> Listedeki çift sayıları koşul kullanarak bul ve ekrana
-          yazdır.
+          <b>Hedef</b> {config.objective}
         </aside>
         <h2>Örnek</h2>
-        <pre>for sayi in sayilar:{"\n"} print(sayi)</pre>
+        <pre>{config.example}</pre>
         <div className="editor">
           <header>
-            <span>main.py</span>
+            <span>{config.file}</span>
             <div>
+              <button onClick={() => note(config.hint)}>İpucu</button>
+              <button onClick={reset}>Sıfırla</button>
               <button
-                onClick={() => note("İpucu: Mod alma operatörü % kullan.")}
-              >
-                İpucu
-              </button>
-              <button
-                onClick={() =>
-                  setCode(
-                    "sayilar = [4, 7, 12, 19, 24]\n\nfor sayi in sayilar:\n    if sayi % 2 == 0:\n        print(sayi)",
-                  )
-                }
+                onClick={() => {
+                  setCode(config.solution);
+                  note("Örnek çözüm editöre yerleştirildi.");
+                }}
               >
                 Çözümü göster
               </button>
-              <button onClick={run}>▶ Çalıştır</button>
+              <button className="runCode" onClick={run}>
+                ▶ Çalıştır ve test et
+              </button>
             </div>
           </header>
           <textarea
             value={code}
-            onChange={(e: any) => setCode(e.target.value)}
+            onChange={(event: any) => {
+              setCode(event.target.value);
+              window.localStorage.setItem(
+                `dou-codelab:lab:${course.code}`,
+                event.target.value,
+              );
+            }}
             spellCheck={false}
+            aria-label={`${course.name} kod editörü`}
           />
           <footer>
-            <b>ÇIKTI</b>
-            <pre>{output}</pre>
+            <button onClick={() => setShowTests((value) => !value)}>
+              {showTests ? "▾" : "▸"} TEST ÇIKTISI
+            </button>
+            {showTests && <pre>{output}</pre>}
           </footer>
         </div>
-        <button
-          className="next"
-          onClick={() => note("Bir sonraki uygulama açıldı.")}
-        >
-          Sonraki uygulama →
-        </button>
+        <div className="labBottomActions">
+          <span>Değişikliklerin bu cihazda otomatik kaydedilir.</span>
+          <button onClick={run}>Testleri yeniden çalıştır →</button>
+        </div>
       </article>
       <aside className="labInfo">
         <article>
           <small>DERS İLERLEMESİ</small>
-          <b>5 / 26</b>
+          <b>%{course.progress}</b>
           <div>
-            <i />
+            <i style={{ width: `${course.progress}%` }} />
           </div>
-          <span>12 dakika kaldı</span>
+          <span>Yaklaşık 12 dakika</span>
         </article>
         <article>
           <small>KAZANIM</small>
           <p>
-            Başarıyla tamamla: <b>80 XP</b>
+            Tüm testleri geçir: <b>80 XP</b>
           </p>
         </article>
         <article>
-          <small>TESTLER</small>
-          <p>Çıktı · Koşul · Kod kalitesi</p>
+          <small>OTOMATİK TESTLER</small>
+          {config.checks.map((check, index) => (
+            <p key={check.label}>
+              <i>{index + 1}</i> {check.label}
+            </p>
+          ))}
+        </article>
+        <article className="labSafety">
+          <small>GÜVENLİ ÇALIŞMA</small>
+          <p>Önizleme testleri tarayıcıda çalışır; sunucuda kod izole ortamda çalıştırılacaktır.</p>
         </article>
       </aside>
     </section>
