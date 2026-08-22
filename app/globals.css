@@ -1197,9 +1197,100 @@ select:focus {
 .editor footer > b {
   font-size: 8px;
 }
+.editor footer > button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #bdc4cd;
+  font-size: 9px;
+  font-weight: 900;
+}
 .editor footer pre {
   font: 11px/1.5 monospace;
   white-space: pre-wrap;
+}
+.topics .backLesson {
+  justify-content: center;
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font-weight: 800;
+}
+.editor header .runCode {
+  padding: 8px 11px;
+  border-radius: 6px;
+  background: var(--red);
+  color: white;
+  font-weight: 800;
+}
+.labBottomActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 13px;
+}
+.labBottomActions span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.labBottomActions button {
+  padding: 10px 13px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+}
+.labInfo article > p {
+  margin: 8px 0 0;
+}
+.labInfo article > p i {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: var(--red);
+  font-style: normal;
+  font-weight: 900;
+}
+.labInfo .labSafety {
+  border-color: #d8e5dc;
+  background: #f3faf5;
+}
+.labInfo .labSafety small {
+  color: #26704a;
+}
+@media (max-width: 650px) {
+  .editor header {
+    height: auto;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  .editor header > div {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .editor header button {
+    flex: 1;
+    white-space: nowrap;
+  }
+  .editor header .runCode {
+    flex-basis: 100%;
+  }
+  .labBottomActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 .next {
   float: right;
