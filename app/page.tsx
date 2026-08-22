@@ -314,7 +314,18 @@ export default function App() {
     ["progress", "↗", "Yayınlananlar"],
     ["news", "◉", "Duyurular"],
   ];
-  const nav = role === "student" ? studentNav : teacherNav;
+  const navGroups =
+    role === "student"
+      ? [
+          ["ÖĞREN", studentNav.slice(0, 3)],
+          ["UYGULA", studentNav.slice(3, 8)],
+          ["GELİŞİM & KARİYER", studentNav.slice(8)],
+        ]
+      : [
+          ["ÜRET & YÖNET", teacherNav.slice(0, 3)],
+          ["DEĞERLENDİR", teacherNav.slice(3, 6)],
+          ["DERS AKIŞI", teacherNav.slice(6)],
+        ];
   return (
     <main className="shell">
       <header className="top">
@@ -351,16 +362,21 @@ export default function App() {
       </header>
       <aside className="side">
         <nav>
-          {nav.map((n: any) => (
-            <button
-              key={n[0]}
-              className={view === n[0] ? "on" : ""}
-              onClick={() => setView(n[0])}
-            >
-              <i>{n[1]}</i>
-              <span>{n[2]}</span>
-              {n[0] === "news" && <em>3</em>}
-            </button>
+          {navGroups.map((group: any) => (
+            <section className="navGroup" key={group[0]}>
+              <small>{group[0]}</small>
+              {group[1].map((n: any) => (
+                <button
+                  key={n[0]}
+                  className={view === n[0] ? "on" : ""}
+                  onClick={() => setView(n[0])}
+                >
+                  <i>{n[1]}</i>
+                  <span>{n[2]}</span>
+                  {n[0] === "news" && <em>3</em>}
+                </button>
+              ))}
+            </section>
           ))}
         </nav>
         <article>
@@ -457,6 +473,40 @@ function Home({ open, go }: { open: (c: any) => void; go: (v: View) => void }) {
             <small>çalışma serisi</small>
           </span>
         </aside>
+      </div>
+      <div className="quickLaunch" aria-label="Hızlı erişim">
+        <button onClick={() => open(courses[0])}>
+          <i>&lt;/&gt;</i>
+          <span>
+            <b>Kod yaz</b>
+            <small>Laboratuvarı aç</small>
+          </span>
+          <em>→</em>
+        </button>
+        <button onClick={() => go("mentor")}>
+          <i>✦</i>
+          <span>
+            <b>Koça sor</b>
+            <small>Kodunda destek al</small>
+          </span>
+          <em>→</em>
+        </button>
+        <button onClick={() => go("arena")}>
+          <i>⚑</i>
+          <span>
+            <b>Arena</b>
+            <small>Boss challenge</small>
+          </span>
+          <em>→</em>
+        </button>
+        <button onClick={() => go("passport")}>
+          <i>◈</i>
+          <span>
+            <b>Skill Passport</b>
+            <small>%78 role hazır</small>
+          </span>
+          <em>→</em>
+        </button>
       </div>
       <div className="homeGrid">
         <article className="continue">
