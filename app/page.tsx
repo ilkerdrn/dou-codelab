@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 type Role = "student" | "teacher";
 type View =
   | "home"
@@ -27,6 +27,7 @@ type View =
   | "achievements"
   | "settings"
   | "helpcenter"
+  | "governance"
   | "systemready"
   | "news"
   | "studio";
@@ -151,6 +152,21 @@ export default function App() {
   const [title, setTitle] = useState(""),
     [summary, setSummary] = useState(""),
     [studioTab, setStudioTab] = useState("İçerik");
+  useEffect(() => {
+    const savedCode = window.localStorage.getItem("dou-codelab:code");
+    const savedTitle = window.localStorage.getItem("dou-codelab:studio-title");
+    const savedSummary = window.localStorage.getItem("dou-codelab:studio-summary");
+    if (savedCode) setCode(savedCode);
+    if (savedTitle) setTitle(savedTitle);
+    if (savedSummary) setSummary(savedSummary);
+  }, []);
+  useEffect(() => {
+    window.localStorage.setItem("dou-codelab:code", code);
+  }, [code]);
+  useEffect(() => {
+    window.localStorage.setItem("dou-codelab:studio-title", title);
+    window.localStorage.setItem("dou-codelab:studio-summary", summary);
+  }, [title, summary]);
   const filtered = useMemo(
     () =>
       courses.filter((c) =>
@@ -167,6 +183,10 @@ export default function App() {
   function login(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !pass) return setError("E-posta ve şifreni gir.");
+    if (!email.toLocaleLowerCase("tr").endsWith("@dogus.edu.tr"))
+      return setError("Yalnızca @dogus.edu.tr kurumsal hesabı kullanılabilir.");
+    if (pass.length < 8)
+      return setError("Şifre en az 8 karakter olmalıdır.");
     setLogged(true);
     setError("");
     setView(role === "teacher" ? "studio" : "home");
@@ -318,6 +338,7 @@ export default function App() {
     ["notifications", "◉", "Bildirim merkezi"],
     ["settings", "⚙", "Ayarlar"],
     ["helpcenter", "?", "Yardım merkezi"],
+    ["governance", "◒", "Gizlilik & erişim"],
     ["news", "◉", "Duyurular"],
   ];
   const teacherNav: any = [
@@ -331,6 +352,7 @@ export default function App() {
     ["reviews", "◇", "Kod inceleme"],
     ["reports", "▦", "Rapor merkezi"],
     ["systemready", "⌁", "Sistem hazırlığı"],
+    ["governance", "◒", "Gizlilik & erişim"],
     ["paths", "⌘", "Ders patikaları"],
     ["calendar", "□", "Ders takvimi"],
     ["progress", "↗", "Yayınlananlar"],
@@ -415,7 +437,7 @@ export default function App() {
         </article>
         <button
           className="help"
-          onClick={() => note("Yardım merkezi açılacak.")}
+          onClick={() => setView("helpcenter")}
         >
           ? <span>Yardım ve destek</span>
         </button>
@@ -476,6 +498,7 @@ export default function App() {
         {view === "achievements" && <Achievements note={note} />}{" "}
         {view === "settings" && <Settings note={note} />}{" "}
         {view === "helpcenter" && <HelpCenter note={note} />}{" "}
+        {view === "governance" && <Governance note={note} />}{" "}
         {view === "systemready" && <SystemReady note={note} />}{" "}
         {view === "news" && <News note={note} />}{" "}
         {view === "studio" && (
@@ -2215,11 +2238,122 @@ function HelpCenter({ note }: any) {
   );
 }
 
+function Governance({ note }: any) {
+  const [consent, setConsent] = useState({
+    leaderboard: true,
+    portfolio: true,
+    research: false,
+  });
+  const toggle = (key: keyof typeof consent) =>
+    setConsent((current) => ({ ...current, [key]: !current[key] }));
+  return (
+    <section>
+      <div className="pageTitle">
+        <div>
+          <small>GÜVENLİ VE KAPSAYICI ÖĞRENME</small>
+          <h1>Gizlilik, erişim ve akademik dürüstlük</h1>
+          <p>
+            Verinin nasıl kullanıldığını, profil görünürlüğünü ve destek
+            seçeneklerini tek yerden yönetin.
+          </p>
+        </div>
+        <button
+          className="primary"
+          onClick={() => note("Tercihlerin güvenli biçimde kaydedildi.")}
+        >
+          Tercihleri kaydet
+        </button>
+      </div>
+      <div className="governanceGrid">
+        <article>
+          <i>01</i>
+          <div>
+            <b>KVKK ve veri minimizasyonu</b>
+            <p>
+              Yalnızca öğrenme süreci için gerekli kimlik, ilerleme, teslim ve
+              değerlendirme kayıtları tutulur.
+            </p>
+            <button onClick={() => note("KVKK aydınlatma özeti açıldı.")}>
+              Aydınlatma özetini görüntüle →
+            </button>
+          </div>
+        </article>
+        <article>
+          <i>02</i>
+          <div>
+            <b>Erişilebilirlik</b>
+            <p>
+              Klavye kullanımı, yüksek kontrast, açıklayıcı etiketler ve mobil
+              uyum temel deneyimin parçasıdır.
+            </p>
+            <button onClick={() => note("Erişilebilirlik geri bildirimi açıldı.")}>
+              Erişim sorunu bildir →
+            </button>
+          </div>
+        </article>
+        <article>
+          <i>03</i>
+          <div>
+            <b>Akademik dürüstlük</b>
+            <p>
+              AI desteği çözümü doğrudan vermek yerine ipucu ve açıklama üretir;
+              teslimlerde kaynak ve katkı beyanı istenir.
+            </p>
+            <button onClick={() => note("Akademik dürüstlük ilkeleri açıldı.")}>
+              İlkeleri incele →
+            </button>
+          </div>
+        </article>
+      </div>
+      <div className="privacyPanel">
+        <header>
+          <div>
+            <small>GÖRÜNÜRLÜK TERCİHLERİ</small>
+            <h2>Kontrol sende</h2>
+          </div>
+          <span>Değişiklikler yalnızca hesabını etkiler</span>
+        </header>
+        {[
+          ["leaderboard", "Liderlik tablosunda adımı göster", "Kapalıysa rumuz kullanılır."],
+          ["portfolio", "Skill Passport profilimi paylaş", "Doğrulanmış yetkinlikler bağlantıyla görüntülenebilir."],
+          ["research", "Anonim öğrenme araştırmasına katkı ver", "Not ve kimlik bilgisi araştırma verisine dahil edilmez."],
+        ].map((item) => {
+          const key = item[0] as keyof typeof consent;
+          return (
+            <label key={key}>
+              <span>
+                <b>{item[1]}</b>
+                <small>{item[2]}</small>
+              </span>
+              <input
+                type="checkbox"
+                checked={consent[key]}
+                onChange={() => toggle(key)}
+              />
+            </label>
+          );
+        })}
+      </div>
+      <div className="dataRights">
+        <span>
+          <b>Veri hakların</b>
+          <small>Erişim, düzeltme, dışa aktarma ve silme talebi oluşturabilirsin.</small>
+        </span>
+        <button onClick={() => note("Veri talep formu hazırlandı.")}>
+          Veri talebi oluştur
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function SystemReady({ note }: any) {
   const items = [
     ["Arayüz ve rol panelleri", "Hazır"],
     ["İçerik & soru motoru", "Hazır"],
     ["ÖÇ–PÇ ve MEDEK", "Hazır"],
+    ["Sunucu kurulum paketi", "Hazır"],
+    ["Sağlık, yedek ve güvenlik planı", "Hazır"],
     ["Office 365 / Entra ID", "Sunucu"],
     ["PostgreSQL kalıcı veri", "Sunucu"],
     ["Güvenli kod çalıştırma", "Sunucu"],
@@ -2247,19 +2381,19 @@ function SystemReady({ note }: any) {
       <div className="readyHero">
         <div>
           <small>PROTOTİP HAZIRLIK</small>
-          <strong>%92</strong>
+          <strong>%100</strong>
           <div>
-            <i style={{ width: "92%" }} />
+            <i style={{ width: "100%" }} />
           </div>
           <p>
-            Ürün, kurumsal kimlik doğrulama ve sunucu servislerini bekliyor.
+            Sunucu erişimi gerektirmeyen ürün ve geçiş hazırlıkları tamamlandı.
           </p>
         </div>
         <aside>
           ✓
           <span>
-            <b>Sunucuya taşımaya hazır</b>
-            <small>Arayüz, iş akışları ve veri modeli tamam</small>
+            <b>Prototip ve geçiş paketi hazır</b>
+            <small>Kurumsal servisler okul altyapısında etkinleştirilecek</small>
           </span>
         </aside>
       </div>
