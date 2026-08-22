@@ -17,6 +17,7 @@ type View =
   | "arena"
   | "reviews"
   | "career"
+  | "questionbank"
   | "news"
   | "studio";
 const courses = [
@@ -304,6 +305,7 @@ export default function App() {
   ];
   const teacherNav: any = [
     ["studio", "＋", "İçerik stüdyosu"],
+    ["questionbank", "▤", "Soru & uygulama bankası"],
     ["analytics", "▥", "Analitik merkez"],
     ["curriculum", "⌗", "ÖÇ–PÇ haritası"],
     ["tasks", "▣", "Görev yönetimi"],
@@ -322,9 +324,9 @@ export default function App() {
           ["GELİŞİM & KARİYER", studentNav.slice(8)],
         ]
       : [
-          ["ÜRET & YÖNET", teacherNav.slice(0, 3)],
-          ["DEĞERLENDİR", teacherNav.slice(3, 6)],
-          ["DERS AKIŞI", teacherNav.slice(6)],
+          ["ÜRET & YÖNET", teacherNav.slice(0, 4)],
+          ["DEĞERLENDİR", teacherNav.slice(4, 7)],
+          ["DERS AKIŞI", teacherNav.slice(7)],
         ];
   return (
     <main className="shell">
@@ -440,6 +442,7 @@ export default function App() {
         {view === "arena" && <Arena note={note} go={setView} />}{" "}
         {view === "reviews" && <ReviewQueue note={note} />}{" "}
         {view === "career" && <CareerMatch note={note} go={setView} />}{" "}
+        {view === "questionbank" && <QuestionBank note={note} />}{" "}
         {view === "news" && <News note={note} />}{" "}
         {view === "studio" && (
           <Studio
@@ -1498,6 +1501,11 @@ function Studio({
   setTab,
   note,
 }: any) {
+  const [blocks, setBlocks] = useState(["Metin", "Bilgi kutusu", "Kod örneği"]);
+  const addBlock = (block: string) => {
+    setBlocks((current) => [...current, block]);
+    note(`${block} bloğu derse eklendi.`);
+  };
   return (
     <section>
       <div className="pageTitle">
@@ -1564,6 +1572,37 @@ function Studio({
             title ? note("İçerik kaydedildi.") : note("Önce başlık gir.");
           }}
         >
+          <div className="studioContext">
+            <label>
+              Ders
+              <select>
+                <option>BLP 101 · Algoritma</option>
+                <option>BLP 105 · Veritabanı</option>
+              </select>
+            </label>
+            <label>
+              Hafta
+              <select>
+                <option>3. Hafta · Döngüler</option>
+                <option>4. Hafta · Fonksiyonlar</option>
+              </select>
+            </label>
+            <label>
+              Öğrenme çıktısı
+              <select>
+                <option>ÖÇ2 · Programlama yapılarını uygular</option>
+                <option>ÖÇ4 · Test ve hata ayıklama yapar</option>
+              </select>
+            </label>
+            <label>
+              Zorluk
+              <select>
+                <option>Başlangıç</option>
+                <option>Orta</option>
+                <option>İleri</option>
+              </select>
+            </label>
+          </div>
           <nav>
             {["İçerik", "Başlangıç kodu", "Testler", "Yayın"].map((x) => (
               <button
@@ -1594,13 +1633,71 @@ function Studio({
                   placeholder="Öğrenme hedefini açıkla."
                 />
               </label>
-              <label>
-                Ders anlatımı
-                <textarea
-                  className="long"
-                  placeholder="Kavramı özgün ve sade biçimde anlatın..."
-                />
-              </label>
+              <div className="blockBuilder">
+                <header>
+                  <div>
+                    <small>BLOK TABANLI DERS</small>
+                    <b>İçerik akışı</b>
+                  </div>
+                  <span>{blocks.length} blok</span>
+                </header>
+                <div className="blockToolbar">
+                  {[
+                    "Metin",
+                    "Görsel",
+                    "Video",
+                    "Kod örneği",
+                    "Bilgi kutusu",
+                    "Mini soru",
+                  ].map((block) => (
+                    <button
+                      type="button"
+                      key={block}
+                      onClick={() => addBlock(block)}
+                    >
+                      ＋ {block}
+                    </button>
+                  ))}
+                </div>
+                <div className="lessonBlocks">
+                  {blocks.map((block, index) => (
+                    <article key={`${block}-${index}`}>
+                      <i>⋮⋮</i>
+                      <span>
+                        <small>
+                          {String(index + 1).padStart(2, "0")} ·{" "}
+                          {block.toUpperCase()}
+                        </small>
+                        <b>
+                          {block === "Metin"
+                            ? "Döngüler, tekrar eden işlemleri daha kısa ve okunabilir hale getirir."
+                            : block === "Bilgi kutusu"
+                              ? "İpucu: range() fonksiyonu başlangıç, bitiş ve adım değerleri alabilir."
+                              : block === "Kod örneği"
+                                ? "for sayi in range(1, 6): print(sayi)"
+                                : `${block} içeriğini düzenlemek için tıkla.`}
+                        </b>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          note(`${block} düzenleme paneli açıldı.`)
+                        }
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setBlocks(blocks.filter((_, i) => i !== index))
+                        }
+                      >
+                        ×
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              </div>
             </>
           )}
           {tab === "Başlangıç kodu" && (
@@ -1687,6 +1784,279 @@ function Studio({
     </section>
   );
 }
+function QuestionBank({ note }: any) {
+  const [type, setType] = useState("Tümü");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [creating, setCreating] = useState(false);
+  const questions = [
+    {
+      id: "Q-104",
+      type: "Kod tamamlama",
+      title: "Çift sayıları filtreleyen koşulu tamamla",
+      course: "BLP 101",
+      outcome: "ÖÇ2",
+      level: "Orta",
+      uses: 18,
+      success: 74,
+    },
+    {
+      id: "Q-103",
+      type: "Hata bulma",
+      title: "Sonsuz döngünün nedenini belirle",
+      course: "BLP 101",
+      outcome: "ÖÇ4",
+      level: "Zor",
+      uses: 11,
+      success: 52,
+    },
+    {
+      id: "Q-102",
+      type: "Çıktı tahmini",
+      title: "İç içe döngünün çıktısı nedir?",
+      course: "BLP 101",
+      outcome: "ÖÇ2",
+      level: "Orta",
+      uses: 24,
+      success: 68,
+    },
+    {
+      id: "Q-101",
+      type: "Çoktan seçmeli",
+      title: "GROUP BY hangi amaçla kullanılır?",
+      course: "BLP 105",
+      outcome: "ÖÇ3",
+      level: "Başlangıç",
+      uses: 31,
+      success: 83,
+    },
+    {
+      id: "Q-100",
+      type: "Mini proje",
+      title: "Satış verilerinden haftalık rapor üret",
+      course: "BLP 105",
+      outcome: "ÖÇ5",
+      level: "Zor",
+      uses: 7,
+      success: 61,
+    },
+  ];
+  const visible =
+    type === "Tümü" ? questions : questions.filter((q) => q.type === type);
+  const toggle = (id: string) =>
+    setSelected((s) =>
+      s.includes(id) ? s.filter((x) => x !== id) : [...s, id],
+    );
+  return (
+    <section className="bankPage">
+      <div className="pageTitle">
+        <div>
+          <small>ÖLÇME & UYGULAMA KÜTÜPHANESİ</small>
+          <h1>Soru ve Uygulama Bankası</h1>
+          <p>
+            Soruları kazanım, ders, zorluk ve soru türüne göre yönet;
+            seçtiklerinden saniyeler içinde görev seti oluştur.
+          </p>
+        </div>
+        <button className="primary" onClick={() => setCreating(!creating)}>
+          ＋ Yeni soru
+        </button>
+      </div>
+      <div className="bankStats">
+        {[
+          ["148", "Toplam içerik"],
+          ["36", "Kod sorusu"],
+          ["21", "Mini proje"],
+          ["%72", "Ortalama başarı"],
+        ].map((x) => (
+          <article key={x[1]}>
+            <b>{x[0]}</b>
+            <span>{x[1]}</span>
+          </article>
+        ))}
+      </div>
+      {creating && (
+        <form
+          className="questionComposer"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setCreating(false);
+            note("Yeni soru taslak olarak bankaya eklendi.");
+          }}
+        >
+          <header>
+            <div>
+              <small>YENİ İÇERİK</small>
+              <h2>Soru oluştur</h2>
+            </div>
+            <button type="button" onClick={() => setCreating(false)}>
+              ×
+            </button>
+          </header>
+          <div>
+            <label>
+              Soru türü
+              <select>
+                <option>Kod tamamlama</option>
+                <option>Hata bulma</option>
+                <option>Çoktan seçmeli</option>
+                <option>Mini proje</option>
+              </select>
+            </label>
+            <label>
+              Ders
+              <select>
+                <option>BLP 101 · Algoritma</option>
+                <option>BLP 105 · Veritabanı</option>
+              </select>
+            </label>
+            <label>
+              ÖÇ / PÇ
+              <select>
+                <option>ÖÇ2 · PÇ2, PÇ5</option>
+                <option>ÖÇ4 · PÇ3, PÇ7</option>
+              </select>
+            </label>
+            <label>
+              Zorluk
+              <select>
+                <option>Başlangıç</option>
+                <option>Orta</option>
+                <option>Zor</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Soru veya görev metni
+            <textarea placeholder="Öğrencinin yapmasını istediğiniz işlemi açık ve ölçülebilir biçimde yazın..." />
+          </label>
+          <label>
+            Başlangıç kodu
+            <textarea
+              className="code"
+              defaultValue={
+                "sayilar = [4, 7, 12, 19]\n\nfor sayi in sayilar:\n    # koşulu tamamla"
+              }
+            />
+          </label>
+          <footer>
+            <button
+              type="button"
+              onClick={() => note("Soru önizlemesi açıldı.")}
+            >
+              Önizle
+            </button>
+            <button>Bankaya kaydet</button>
+          </footer>
+        </form>
+      )}
+      <div className="bankToolbar">
+        <div className="bankTypes">
+          {[
+            "Tümü",
+            "Kod tamamlama",
+            "Hata bulma",
+            "Çıktı tahmini",
+            "Çoktan seçmeli",
+            "Mini proje",
+          ].map((t) => (
+            <button
+              className={type === t ? "on" : ""}
+              onClick={() => setType(t)}
+              key={t}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        <div>
+          <select aria-label="Ders filtresi">
+            <option>Tüm dersler</option>
+            <option>BLP 101</option>
+            <option>BLP 105</option>
+          </select>
+          <select aria-label="Zorluk filtresi">
+            <option>Tüm seviyeler</option>
+            <option>Başlangıç</option>
+            <option>Orta</option>
+            <option>Zor</option>
+          </select>
+        </div>
+      </div>
+      {selected.length > 0 && (
+        <div className="selectionBar">
+          <span>
+            <b>{selected.length} içerik seçildi</b> · Toplam 240 XP önerildi
+          </span>
+          <div>
+            <button
+              onClick={() => {
+                note("Seçili içerikler başka derse kopyalandı.");
+                setSelected([]);
+              }}
+            >
+              Derse kopyala
+            </button>
+            <button
+              onClick={() => {
+                note("Görev seti oluşturuldu ve yayın ayarları açıldı.");
+                setSelected([]);
+              }}
+            >
+              Görev seti oluştur →
+            </button>
+          </div>
+        </div>
+      )}
+      <section className="bankTable">
+        <header>
+          <span />
+          <span>İçerik</span>
+          <span>Ders / Kazanım</span>
+          <span>Seviye</span>
+          <span>Kullanım</span>
+          <span>Başarı</span>
+          <span />
+        </header>
+        {visible.map((q) => (
+          <article key={q.id}>
+            <input
+              type="checkbox"
+              checked={selected.includes(q.id)}
+              onChange={() => toggle(q.id)}
+              aria-label={`${q.id} seç`}
+            />
+            <div>
+              <small>
+                {q.id} · {q.type}
+              </small>
+              <b>{q.title}</b>
+            </div>
+            <span>
+              <b>{q.course}</b>
+              <small>{q.outcome}</small>
+            </span>
+            <em
+              className={
+                q.level === "Zor" ? "hard" : q.level === "Orta" ? "medium" : ""
+              }
+            >
+              {q.level}
+            </em>
+            <strong>{q.uses} kez</strong>
+            <div className="successRate">
+              <i style={{ width: `${q.success}%` }} />
+              <small>%{q.success}</small>
+            </div>
+            <button onClick={() => note(`${q.id} düzenleme ekranı açıldı.`)}>
+              •••
+            </button>
+          </article>
+        ))}
+      </section>
+    </section>
+  );
+}
+
 function SkillPassport({ note, go }: any) {
   const skills = [
     ["Python", 84, "Doğrulandı"],
